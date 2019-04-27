@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.421
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CodikSite", "CodikSite\CodikSite.csproj", "{ACFA1DF4-BC36-44F8-8DFB-CB4B907D40C0}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{ACFA1DF4-BC36-44F8-8DFB-CB4B907D40C0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACFA1DF4-BC36-44F8-8DFB-CB4B907D40C0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACFA1DF4-BC36-44F8-8DFB-CB4B907D40C0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACFA1DF4-BC36-44F8-8DFB-CB4B907D40C0}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A512CB91-BB01-4D08-BD68-12C4804F1E49}
+	EndGlobalSection
+EndGlobal
