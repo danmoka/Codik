@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CodikSite.Algorithms;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -43,27 +44,34 @@ namespace CodikSite.Controllers
             toEncode = toEncode.Replace("\r\n", "\n");
             try
             {
+                double compressionRatio=0;
                 switch (selection)
                 {
-                    //case "LZ78":
-                    //    ViewData["Encoded"] = new LZ78().Encode(toEncode);
-                    //    break;
-                    //case "Хаффман":
-                    //    ViewData["Encoded"] = new HuffmanCoding(basis).Encode(toEncode);
-                    //    break;
-                    //case "Арифметическое":
-                    //    ViewData["Encoded"] = new ArithmeticCoding().Encode(toEncode);
-                    //    break;
-                    //case "BW":
-                    //    ViewData["Encoded"] = new BWT().Encode(toEncode);
-                    //    break;
-                    //case "RLE":
-                    //    ViewData["Encoded"] = new RLE().Encode(toEncode);
-                    //    break;
+                    case "LZ78":
+                        ViewData["Encoded"] = new LZ78().Encode(toEncode, out compressionRatio);
+                        ViewData["CompressionDegree"] = string.Format("{0:0.##}", compressionRatio);
+                        break;
+                    case "Хаффман":
+                        ViewData["Encoded"] = new HuffmanCoding(basis).Encode(toEncode, out compressionRatio);
+                        ViewData["CompressionDegree"] = string.Format("{0:0.##}", compressionRatio);
+                        break;
+                    case "Арифметическое":
+                        ViewData["Encoded"] = new ArithmeticCoding().Encode(toEncode, out compressionRatio);
+                        ViewData["CompressionDegree"] = string.Format("{0:0.##}", compressionRatio);
+                        break;
+                    case "BW":
+                        ViewData["Encoded"] = new BWT().Encode(toEncode, out compressionRatio);
+                        ViewData["CompressionDegree"] = string.Format("{0:0.##}", compressionRatio);
+                        break;
+                    case "RLE":
+                        ViewData["Encoded"] = new RLE().Encode(toEncode, out compressionRatio);
+                        ViewData["CompressionDegree"] = string.Format("{0:0.##}", compressionRatio);
+                        break;
                     default:
                         ViewData["Encoded"] = "Упс...Что-то пошло не так.";
                         break;
                 }
+                //ViewData["CompressionDegree"] = string.Format("{0:0.##}", compressionRatio);
             }
             catch (Exception e)
             {
@@ -129,7 +137,7 @@ namespace CodikSite.Controllers
         [HttpPost]
         public ActionResult RLEDecode(string toDecode)
         {
-            //Decode(toDecode, new RLE());
+            Decode(toDecode, new RLE());
 
             return View();
         }
@@ -142,7 +150,7 @@ namespace CodikSite.Controllers
         [HttpPost]
         public ActionResult HuffmanDecode(string toDecode)
         {
-            //Decode(toDecode, new HuffmanCoding());
+            Decode(toDecode, new HuffmanCoding());
 
             return View();
         }
@@ -155,7 +163,7 @@ namespace CodikSite.Controllers
         [HttpPost]
         public ActionResult ArithmeticDecode(string toDecode)
         {
-            //Decode(toDecode, new ArithmeticCoding());
+            Decode(toDecode, new ArithmeticCoding());
 
             return View();
         }
@@ -168,7 +176,7 @@ namespace CodikSite.Controllers
         [HttpPost]
         public ActionResult LZ78Decode(string toDecode)
         {
-            //Decode(toDecode, new LZ78());
+            Decode(toDecode, new LZ78());
 
             return View();
         }
@@ -181,7 +189,7 @@ namespace CodikSite.Controllers
         [HttpPost]
         public ActionResult BWDecode(string toDecode)
         {
-            //Decode(toDecode, new BWT());
+            Decode(toDecode, new BWT());
 
             return View();
         }
@@ -191,28 +199,28 @@ namespace CodikSite.Controllers
             return View();
         }
 
-        //private void Decode(string toDecode, ITextEncodingAlgorithm algorithm)
-        //{
-        //    if (toDecode.Length == 0)
-        //    {
-        //        ViewData["ArgumentException"] = "Пустая строка, пожалуйста введите что-нибудь.";
-        //        return;
-        //    }
-        //    toDecode = toDecode.Replace("\r\n", "\n");
+        private void Decode(string toDecode, ITextEncodingAlgorithm algorithm)
+        {
+            if (toDecode.Length == 0)
+            {
+                ViewData["ArgumentException"] = "Пустая строка, пожалуйста введите что-нибудь.";
+                return;
+            }
+            toDecode = toDecode.Replace("\r\n", "\n");
 
-        //    try
-        //    {
-        //        ViewData["Decoded"] = algorithm.Decode(toDecode);
-        //    }
-        //    catch (ArgumentException e)
-        //    {
-        //        ViewData["ArgumentException"] = e.Message;
-        //    }
-        //    catch (Exception e)
-        //    {
-        //        ViewData["Error"] = e.Message;
-        //    }
-        //}
+            try
+            {
+                ViewData["Decoded"] = algorithm.Decode(toDecode);
+            }
+            catch (ArgumentException e)
+            {
+                ViewData["ArgumentException"] = e.Message;
+            }
+            catch (Exception e)
+            {
+                ViewData["Error"] = e.Message;
+            }
+        }
 
         [HttpPost]
         public FileResult GetFile(string result)
