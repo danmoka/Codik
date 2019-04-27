@@ -123,6 +123,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithms\BitHacks.cs" />
+    <Compile Include="Algorithms\BWT.cs" />
+    <Compile Include="Algorithms\HuffmanCoding.cs" />
+    <Compile Include="Algorithms\ITextEncodingAlgorithm.cs" />
+    <Compile Include="Algorithms\LZ78.cs" />
+    <Compile Include="Algorithms\RLE.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
