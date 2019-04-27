@@ -1,0 +1,75 @@
+﻿
+@{
+    ViewBag.Title = "Арифметическое кодирование";
+}
+
+@if (ViewData["ArgumentException"] != null)
+{
+    <div class="alert alert-info" role="alert">
+        <button type="button" class="close" data-dismiss="alert">
+            x
+        </button>
+        @ViewData["ArgumentException"] Пожалуйста, проверьте соответствие введенных данных нужному формату.
+    </div>
+}
+
+@if (ViewData["Error"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        <button type="button" class="close" data-dismiss="alert">
+            x
+        </button>
+        Упс, что-то пошло не так... @ViewData["Error"]
+    </div>
+}
+
+<h2>@ViewBag.Title</h2>
+<form action="~/Home/ArithmeticDecode" method="post">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <textarea class="form-control" name="toDecode" value="" wrap="soft" rows="3" placeholder="Ввести код">@ViewData["UploadedText"]</textarea>
+                <small id="help" class="form-text text-muted">
+                    Пожалуйста, введите код в виде: 0923147009272265137761835,14,{[м-4][а-4][ -2][ы-1][л-1][р-1][у-1]}
+                    Где 14 - длина декодируемого сообщения.
+                </small>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class=" col-md-6">
+            <button class="btn btn-success pull-right">Декодировать</button>
+        </div>
+    </div>
+</form>
+<div class="row">
+    @using (Html.BeginForm("UploadedTextArithmetic", "home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        <div class="form-group">
+            <div class=" col-md-4">
+                <input type="file" name="fileUpload" accept="text/*" /><br />
+            </div>
+            <div class="col-md-2">
+                <button class="btn pull-right">Загрузить</button>
+            </div>
+        </div>
+
+    }
+</div>
+<form action="~/Home/GetFile" method="post">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group">
+                <p class="lead">Результат</p>
+                <textarea class="form-control" name="result" wrap="soft" rows="6" readonly>@ViewData["Decoded"]</textarea>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <button class="btn pull-left">Скачать</button>
+        </div>
+    </div>
+</form>
+
+

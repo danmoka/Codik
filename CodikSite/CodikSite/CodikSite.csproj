@@ -200,8 +200,15 @@
     <Content Include="Scripts\popper.js.map" />
     <Content Include="Scripts\popper-utils.min.js.map" />
     <Content Include="Scripts\popper-utils.js.map" />
+    <Content Include="Views\Home\ArithmeticDecode.cshtml" />
+    <Content Include="Views\Home\BWDecode.cshtml" />
+    <Content Include="Views\Home\Encode.cshtml" />
+    <Content Include="Views\Home\HuffmanDecode.cshtml" />
+    <Content Include="Views\Home\LZ78Decode.cshtml" />
+    <Content Include="Views\Home\RLEDecode.cshtml" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Algorithms\" />
     <Folder Include="App_Data\" />
     <Folder Include="Models\" />
   </ItemGroup>
