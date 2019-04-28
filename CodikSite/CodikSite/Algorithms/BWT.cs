@@ -13,9 +13,9 @@ namespace CodikSite.Algorithms
     //source https://neerc.ifmo.ru/wiki/index.php?title=Преобразование_Барроуза-Уилера#.D0.90.D0.BB.D0.B3.D0.BE.D1.80.D0.B8.D1.82.D0.BC_.D0.B7.D0.B0_.D0.BB.D0.B8.D0.BD.D0.B5.D0.B9.D0.BD.D0.BE.D0.B5_.D0.B2.D1.80.D0.B5.D0.BC.D1.8F
     public class BWT : ITextEncodingAlgorithm
     {
-        
+
         public string Encode(string sourceText, out double compressionRatio)
-        {           
+        {
             // при изменении нужно изменить и в регулярном выражении в Decode
             int textBlockSize = 8192;
             var answer = new StringBuilder(sourceText.Length);
@@ -122,10 +122,10 @@ namespace CodikSite.Algorithms
 
                 }
             }
-        }   
+        }
 
         //Перестановка
-        private class Permutation: IComparable<Permutation>
+        private class Permutation : IComparable<Permutation>
         {
             readonly char[] _charArray;
             public bool Original { get; set; }
@@ -176,7 +176,7 @@ namespace CodikSite.Algorithms
             }
 
             int sum = 0;
-            foreach(var element in (from x in uniqueCharacters orderby x.Key select x.Key).ToArray())
+            foreach (var element in (from x in uniqueCharacters orderby x.Key select x.Key).ToArray())
             {
                 var value = uniqueCharacters[element];
                 uniqueCharacters[element] = sum;

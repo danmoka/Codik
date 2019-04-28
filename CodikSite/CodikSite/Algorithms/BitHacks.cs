@@ -3,16 +3,14 @@ namespace CodikSite.Algorithms
 {
     static class BitHacks
     {
-        public static int GetHighestBitPosition(int number)
+        public static uint GetRealSizeForNumber(uint number)
         {
-            int bitPos = 1;
-            int val = 2;
-            while (val <= number)
+            uint bitCount = 0;
+            do
             {
-                val <<= 1;
-                bitPos++;
-            }
-            return bitPos;
+                bitCount++;
+            } while ((number >>= 1) > 0);
+            return bitCount;
         }
     }
 }

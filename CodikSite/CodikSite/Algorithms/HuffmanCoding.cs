@@ -24,11 +24,6 @@ namespace CodikSite.Algorithms
             if (numberSystem < 2) throw new ArgumentException();
             if (numberSystem > 10) throw new ArgumentException();
             this._numberSystem = numberSystem;
-        }       
-
-        private IReadOnlyDictionary<char, string> CreateCodeWords(string message, int numberSystem)
-        {
-            return CreateCodeWords(GetFrequencyDictionary(message), numberSystem);
         }
 
         public string Encode(string sourceText, out double compressionRatio)
@@ -36,8 +31,9 @@ namespace CodikSite.Algorithms
             var codes = CreateCodeWords(sourceText, _numberSystem);
             var builder = Coder.GetCodedMessageBuilder(sourceText, codes);
 
-            compressionRatio = (sourceText.Length * (double)BitHacks.GetHighestBitPosition(char.MaxValue))
-                / ((double)BitHacks.GetHighestBitPosition(codes.Count) * builder.Length);
+            compressionRatio = (sourceText.Length * (double)BitHacks.GetRealSizeForNumber(char.MaxValue))
+                / ((double)BitHacks.GetRealSizeForNumber((uint)Math.Min(codes.Count, _numberSystem) - 1)
+                * builder.Length);
 
             return Coder.AddCodeWords(builder, codes).ToString();
         }
@@ -45,6 +41,11 @@ namespace CodikSite.Algorithms
         public string Decode(string codedText)
         {
             return Decoder.GetDecodedMessage(codedText);
+        }
+
+        private IReadOnlyDictionary<char, string> CreateCodeWords(string message, int numberSystem)
+        {
+            return CreateCodeWords(GetFrequencyDictionary(message), numberSystem);
         }
 
         private IReadOnlyDictionary<char, string> CreateCodeWords(IReadOnlyDictionary<char, double>
@@ -180,7 +181,7 @@ namespace CodikSite.Algorithms
                 return GetCodedMessageBuilder(message, codes, addCodes).ToString();
             }
 
-            public static StringBuilder AddCodeWords(StringBuilder codedMessageBuilder, 
+            public static StringBuilder AddCodeWords(StringBuilder codedMessageBuilder,
                 IReadOnlyDictionary<char, string> codes)
             {
                 codedMessageBuilder.Append('{');
@@ -195,8 +196,8 @@ namespace CodikSite.Algorithms
                 return codedMessageBuilder;
             }
 
-            public static StringBuilder GetCodedMessageBuilder(string message, 
-                IReadOnlyDictionary<char, string> codes, bool addCodes=false)
+            public static StringBuilder GetCodedMessageBuilder(string message,
+                IReadOnlyDictionary<char, string> codes, bool addCodes = false)
             {
                 StringBuilder codedMessageBuilder = new StringBuilder(message.Length * 3);
 
@@ -245,7 +246,7 @@ namespace CodikSite.Algorithms
                         decodedMessage.Append(decoded);
                         word.Clear();
                     }
-                }              
+                }
 
                 return decodedMessage.ToString();
             }
@@ -253,7 +254,7 @@ namespace CodikSite.Algorithms
             static IReadOnlyDictionary<string, char> GetCodeWords(string codedMessage,
                 out int dictionaryIndex)
             {
-                var codedTextPattern = @"\{(\[(.|\n)\-\d+\])+\}\z";               
+                var codedTextPattern = @"\{(\[(.|\n)\-\d+\])+\}\z";
                 var matchAllCodes = Regex.Match(codedMessage, codedTextPattern);
                 if (matchAllCodes.Success)
                 {

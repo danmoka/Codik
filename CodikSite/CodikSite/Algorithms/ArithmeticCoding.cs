@@ -1,4 +1,3 @@
-using System.Web;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -27,6 +26,7 @@ namespace CodikSite.Algorithms
             Left = 0;
             Right = 1;
         }
+
         public string Encode(string Enter, out double compressionRatio)
         {
             Left = 0;
@@ -53,8 +53,9 @@ namespace CodikSite.Algorithms
             mid.Append((Left + (Right - Left) / 2));
             mid.Remove(0, 2);
             output.Append(mid);
-            var kk = BitHacks.GetHighestBitPosition(char.MaxValue);
-            compressionRatio = (double)((double)(Enter.Length * BitHacks.GetHighestBitPosition(char.MaxValue)) / (double)(output.Length * 4));            
+            var kk = BitHacks.GetRealSizeForNumber(char.MaxValue);
+            compressionRatio = (double)Enter.Length * BitHacks.GetRealSizeForNumber(char.MaxValue) /
+                ((double)output.Length * 4);          
             output.Append(",");
             output.Append(GetFrequencyDictionary());
 
@@ -62,6 +63,7 @@ namespace CodikSite.Algorithms
 
             return output.ToString();
         }
+
         public string Decode(string Enter)
         {
             SetFrequencyDictionary(Enter);
@@ -92,6 +94,7 @@ namespace CodikSite.Algorithms
             return output.ToString();
 
         }
+
         private int BinarySearch_Rec(decimal key, int left, int right, decimal range)
         {
             int mid = left + (right - left) / 2;
@@ -110,6 +113,7 @@ namespace CodikSite.Algorithms
             else
                 return BinarySearch_Rec(key, mid + 1, right, range);
         }
+
         public string GetFrequencyDictionary()
         {
             StringBuilder output = new StringBuilder();
@@ -128,6 +132,7 @@ namespace CodikSite.Algorithms
             output.Append('}');
             return output.ToString();
         }
+
         public void SetFrequencyDictionary(string Dictionary)
         {
             letters = new List<char>();
@@ -179,6 +184,7 @@ namespace CodikSite.Algorithms
 
             CreateLine(n);
         }
+
         private void CreateDictionary(string Enter)
         {
             int n = Enter.Length;
@@ -196,6 +202,7 @@ namespace CodikSite.Algorithms
             }
             CreateLine(n);
         }
+
         private void CreateLine(int n)
         {
             Count = 0;
@@ -209,6 +216,7 @@ namespace CodikSite.Algorithms
                 Count += pair.Value;
             }
         }
+
         private void ChangeBorders(ref StringBuilder ou)
         {
             var cl = new StringBuilder();
@@ -234,6 +242,7 @@ namespace CodikSite.Algorithms
             Right = Convert.ToDecimal(cr.ToString());
 
         }
+
         private void ChangeBordersDecode(ref StringBuilder stringBuilder)
         {
             var cl = new StringBuilder();
