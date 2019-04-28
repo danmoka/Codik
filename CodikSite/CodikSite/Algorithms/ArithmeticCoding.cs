@@ -1,4 +1,4 @@
-﻿using System.Web;
+using System.Web;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,12 +52,13 @@ namespace CodikSite.Algorithms
             mid.Append((Left + (Right - Left) / 2));
             mid.Remove(0, 2);
             output.Append(mid);
+            compressionRatio = (double)((Enter.Length * BitHacks.GetHighestBitPosition(char.MaxValue)) / (output.Length * 4));
             output.Append(",");
             output.Append(Enter.Length);
             output.Append(",");
             output.Append(GetFrequencyDictionary());
 
-            compressionRatio = 1.1; // это коэф сжатия
+            
 
             return output.ToString();
         }
