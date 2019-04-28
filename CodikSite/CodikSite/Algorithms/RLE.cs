@@ -8,11 +8,11 @@ namespace CodikSite.Algorithms
     /// Run-Length Encoding
     /// </summary>
     public class RLE : ITextEncodingAlgorithm
-    {        
+    {
         public string Encode(string sourceText, out double compressionRatio)
         {
             var answer = new StringBuilder();
-            int blockСounter, charCounter, maxCharCounter;
+            uint blockСounter, charCounter, maxCharCounter;
             blockСounter = charCounter = maxCharCounter = 1;
 
             for (int i = 1; i < sourceText.Length; i++)
@@ -29,9 +29,9 @@ namespace CodikSite.Algorithms
 
             answer.Append(string.Format("({0},{1})", sourceText[sourceText.Length - 1], charCounter));
 
-            double charSize = BitHacks.GetHighestBitPosition(char.MaxValue);
+            double charSize = BitHacks.GetRealSizeForNumber(char.MaxValue);
             compressionRatio = (sourceText.Length * charSize) /
-                (blockСounter * (BitHacks.GetHighestBitPosition(maxCharCounter) + charSize));
+                (blockСounter * (BitHacks.GetRealSizeForNumber(maxCharCounter) + charSize));
 
             return answer.ToString();
 
@@ -56,4 +56,5 @@ namespace CodikSite.Algorithms
             else throw new ArgumentException();
         }
     }
+
 }

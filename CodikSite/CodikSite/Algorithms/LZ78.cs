@@ -8,7 +8,7 @@ namespace CodikSite.Algorithms
     /// <summary>
     /// LZ78
     /// </summary>
-    public class LZ78 :ITextEncodingAlgorithm
+    public class LZ78 : ITextEncodingAlgorithm
     {
         public string Encode(string sourceText, out double compressionRatio)
         {
@@ -39,9 +39,9 @@ namespace CodikSite.Algorithms
             answer.Append(string.Format("({0},{1})", dictionary[buffer], '$'));
             blockCounter++;
 
-            double charSize = BitHacks.GetHighestBitPosition(char.MaxValue);
+            double charSize = BitHacks.GetRealSizeForNumber(char.MaxValue);
             compressionRatio = (sourceText.Length * charSize) /
-                (blockCounter * (charSize + BitHacks.GetHighestBitPosition(dictionary.Count)));
+                (blockCounter * (charSize + BitHacks.GetRealSizeForNumber((uint)dictionary.Count)));
 
             return answer.ToString();
         }
@@ -73,4 +73,5 @@ namespace CodikSite.Algorithms
             else throw new ArgumentException();
         }
     }
+
 }

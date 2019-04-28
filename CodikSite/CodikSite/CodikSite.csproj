@@ -123,6 +123,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Algorithms\ArithmeticCoding.cs" />
     <Compile Include="Algorithms\BitHacks.cs" />
     <Compile Include="Algorithms\BWT.cs" />
     <Compile Include="Algorithms\HuffmanCoding.cs" />
