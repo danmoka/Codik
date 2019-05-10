@@ -32,8 +32,76 @@ namespace CodikSite.Controllers
             return View();
         }
 
+        //[HttpPost]
+        //public ActionResult Encode(string toEncode, string selection, int basis)
+        //{
+        //    if (toEncode.Length == 0)
+        //    {
+        //        ViewData["ArgumentException"] = "Пустая строка, пожалуйста введите что-нибудь.";
+        //        return View();
+        //    }
+
+        //    toEncode = toEncode.Replace("\r\n", "\n");
+        //    try
+        //    {
+        //        double compressionRatio=0;
+        //        switch (selection)
+        //        {
+        //            case "LZ78":
+        //                ViewData["Encoded"] = new LZ78().Encode(toEncode, out compressionRatio);
+        //                ViewData["CompressionDegree"] = string.Format("{0:0.##}", compressionRatio);
+        //                break;
+        //            case "Хаффман":
+        //                ViewData["Encoded"] = new HuffmanCoding(basis).Encode(toEncode, out compressionRatio);
+        //                ViewData["CompressionDegree"] = string.Format("{0:0.##}", compressionRatio);
+        //                break;
+        //            case "Арифметическое":
+        //                ViewData["Encoded"] = new ArithmeticCoding().Encode(toEncode, out compressionRatio);
+        //                ViewData["CompressionDegree"] = string.Format("{0:0.##}", compressionRatio);
+        //                break;
+        //            case "BW":
+        //                ViewData["Encoded"] = new BWT().Encode(toEncode, out compressionRatio);
+        //                ViewData["CompressionDegree"] = string.Format("{0:0.##}", compressionRatio);
+        //                break;
+        //            case "RLE":
+        //                ViewData["Encoded"] = new RLE().Encode(toEncode, out compressionRatio);
+        //                ViewData["CompressionDegree"] = string.Format("{0:0.##}", compressionRatio);
+        //                break;
+        //            default:
+        //                ViewData["Encoded"] = "Упс...Что-то пошло не так.";
+        //                break;
+        //        }
+        //        //ViewData["CompressionDegree"] = string.Format("{0:0.##}", compressionRatio);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        ViewData["Error"] = e.Message;
+        //    }
+
+        //    return View();
+        //}
+
+        //public ActionResult Encode()
+        //{
+        //    return View();
+        //}
+
+        //[HttpPost]
+        //public ActionResult UploadedText(IEnumerable<HttpPostedFileBase> fileUpload)
+        //{
+        //    //var pathForView = (Request.UrlReferrer.AbsolutePath).Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries)[1];
+        //    SetTextToView(fileUpload);
+
+        //    return View("Encode");
+        //}
+        #region HuffmanEncode
+        public ActionResult HuffmanEncode()
+        {
+            return View();
+        }
+
         [HttpPost]
-        public ActionResult Encode(string toEncode, string selection, int basis)
+        public ActionResult HuffmanEncode(string toEncode, int basis)
         {
             if (toEncode.Length == 0)
             {
@@ -44,34 +112,8 @@ namespace CodikSite.Controllers
             toEncode = toEncode.Replace("\r\n", "\n");
             try
             {
-                double compressionRatio=0;
-                switch (selection)
-                {
-                    case "LZ78":
-                        ViewData["Encoded"] = new LZ78().Encode(toEncode, out compressionRatio);
-                        ViewData["CompressionDegree"] = string.Format("{0:0.##}", compressionRatio);
-                        break;
-                    case "Хаффман":
-                        ViewData["Encoded"] = new HuffmanCoding(basis).Encode(toEncode, out compressionRatio);
-                        ViewData["CompressionDegree"] = string.Format("{0:0.##}", compressionRatio);
-                        break;
-                    case "Арифметическое":
-                        ViewData["Encoded"] = new ArithmeticCoding().Encode(toEncode, out compressionRatio);
-                        ViewData["CompressionDegree"] = string.Format("{0:0.##}", compressionRatio);
-                        break;
-                    case "BW":
-                        ViewData["Encoded"] = new BWT().Encode(toEncode, out compressionRatio);
-                        ViewData["CompressionDegree"] = string.Format("{0:0.##}", compressionRatio);
-                        break;
-                    case "RLE":
-                        ViewData["Encoded"] = new RLE().Encode(toEncode, out compressionRatio);
-                        ViewData["CompressionDegree"] = string.Format("{0:0.##}", compressionRatio);
-                        break;
-                    default:
-                        ViewData["Encoded"] = "Упс...Что-то пошло не так.";
-                        break;
-                }
-                //ViewData["CompressionDegree"] = string.Format("{0:0.##}", compressionRatio);
+                ViewData["Encoded"] = new HuffmanCoding(basis).Encode(toEncode, out double compressionRatio);
+                ViewData["CompressionDegree"] = string.Format("{0:0.##}", compressionRatio);
             }
             catch (Exception e)
             {
@@ -81,20 +123,163 @@ namespace CodikSite.Controllers
             return View();
         }
 
-        public ActionResult Encode()
+        [HttpPost]
+        public ActionResult UploadedTextHuffmanEncode(IEnumerable<HttpPostedFileBase> fileUpload)
+        {
+            SetTextToView(fileUpload);
+
+            return View("HuffmanEncode");
+        }
+        #endregion
+        #region ArithmeticEncode
+        public ActionResult ArithmeticEncode()
         {
             return View();
         }
 
         [HttpPost]
-        public ActionResult UploadedText(IEnumerable<HttpPostedFileBase> fileUpload)
+        public ActionResult ArithmeticEncode(string toEncode)
         {
-            //var pathForView = (Request.UrlReferrer.AbsolutePath).Split(new char[] { '/' }, StringSplitOptions.RemoveEmptyEntries)[1];
-            SetTextToView(fileUpload);
+            if (toEncode.Length == 0)
+            {
+                ViewData["ArgumentException"] = "Пустая строка, пожалуйста введите что-нибудь.";
+                return View();
+            }
 
-            return View("Encode");
+            toEncode = toEncode.Replace("\r\n", "\n");
+            try
+            {
+                ViewData["Encoded"] = new ArithmeticCoding().Encode(toEncode, out double compressionRatio);
+                ViewData["CompressionDegree"] = string.Format("{0:0.##}", compressionRatio);
+            }
+            catch (Exception e)
+            {
+                ViewData["Error"] = e.Message;
+            }
+
+            return View();
         }
 
+        [HttpPost]
+        public ActionResult UploadedTextArithmeticEncode(IEnumerable<HttpPostedFileBase> fileUpload)
+        {
+            SetTextToView(fileUpload);
+
+            return View("ArithmeticEncode");
+        }
+        #endregion
+        #region BWEncode
+        public ActionResult BWEncode()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult BWEncode(string toEncode)
+        {
+            if (toEncode.Length == 0)
+            {
+                ViewData["ArgumentException"] = "Пустая строка, пожалуйста введите что-нибудь.";
+                return View();
+            }
+
+            toEncode = toEncode.Replace("\r\n", "\n");
+            try
+            {
+                ViewData["Encoded"] = new BWT().Encode(toEncode, out double compressionRatio);
+                ViewData["CompressionDegree"] = string.Format("{0:0.##}", compressionRatio);
+            }
+            catch (Exception e)
+            {
+                ViewData["Error"] = e.Message;
+            }
+
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult UploadedTextBWEncode(IEnumerable<HttpPostedFileBase> fileUpload)
+        {
+            SetTextToView(fileUpload);
+
+            return View("BWEncode");
+        }
+        #endregion
+        #region LZ78
+        public ActionResult LZ78Encode()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult LZ78Encode(string toEncode)
+        {
+            if (toEncode.Length == 0)
+            {
+                ViewData["ArgumentException"] = "Пустая строка, пожалуйста введите что-нибудь.";
+                return View();
+            }
+
+            toEncode = toEncode.Replace("\r\n", "\n");
+            try
+            {
+                ViewData["Encoded"] = new LZ78().Encode(toEncode, out double compressionRatio);
+                ViewData["CompressionDegree"] = string.Format("{0:0.##}", compressionRatio);
+            }
+            catch (Exception e)
+            {
+                ViewData["Error"] = e.Message;
+            }
+
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult UploadedTextLZ78Encode(IEnumerable<HttpPostedFileBase> fileUpload)
+        {
+            SetTextToView(fileUpload);
+
+            return View("LZ78Encode");
+        }
+        #endregion
+        #region RLEEncode
+        public ActionResult RLEEncode()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult RLEEncode(string toEncode)
+        {
+            if (toEncode.Length == 0)
+            {
+                ViewData["ArgumentException"] = "Пустая строка, пожалуйста введите что-нибудь.";
+                return View();
+            }
+
+            toEncode = toEncode.Replace("\r\n", "\n");
+            try
+            {
+                ViewData["Encoded"] = new RLE().Encode(toEncode, out double compressionRatio);
+                ViewData["CompressionDegree"] = string.Format("{0:0.##}", compressionRatio);
+            }
+            catch (Exception e)
+            {
+                ViewData["Error"] = e.Message;
+            }
+
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult UploadedTextRLEEncode(IEnumerable<HttpPostedFileBase> fileUpload)
+        {
+            SetTextToView(fileUpload);
+
+            return View("RLEEncode");
+        }
+        #endregion
+        #region Decode
         [HttpPost]
         public ActionResult UploadedTextHuffman(IEnumerable<HttpPostedFileBase> fileUpload)
         {
@@ -199,6 +384,7 @@ namespace CodikSite.Controllers
             return View();
         }
 
+        #endregion
         private void Decode(string toDecode, ITextEncodingAlgorithm algorithm)
         {
             if (toDecode.Length == 0)

@@ -35,14 +35,14 @@
     </div>
     <div class="row">
         <div class=" col-md-6">
-            <button class="btn btn-success pull-right">Декодировать</button>
+            <button class="btn btn-success pull-right" style="margin-bottom:3%">Декодировать</button>
         </div>
     </div>
 </form>
-<div class="row">
-    @using (Html.BeginForm("UploadedTextLZ78", "home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+<div class="form-group">
+    @using (Html.BeginForm("UploadedTextLZ78Decode", "home", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
-        <div class="form-group">
+        <div class="row">
             <div class=" col-md-4">
                 <input type="file" name="fileUpload" accept="text/*" /><br />
             </div>
@@ -50,8 +50,10 @@
                 <button class="btn pull-right">Загрузить</button>
             </div>
         </div>
-
     }
+    <small id="help" class="form-text text-muted">
+        Пожалуйста, загружайте файл в кодировке Unicode.
+    </small>
 </div>
 <form action="~/Home/GetFile" method="post">
     <div class="row">

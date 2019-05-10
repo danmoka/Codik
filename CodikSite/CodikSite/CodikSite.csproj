@@ -179,12 +179,17 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Home\Encode.cshtml" />
     <Content Include="Views\Home\ArithmeticDecode.cshtml" />
     <Content Include="Views\Home\BWDecode.cshtml" />
-    <Content Include="Views\Home\Encode.cshtml" />
     <Content Include="Views\Home\HuffmanDecode.cshtml" />
     <Content Include="Views\Home\LZ78Decode.cshtml" />
     <Content Include="Views\Home\RLEDecode.cshtml" />
+    <Content Include="Views\Home\HuffmanEncode.cshtml" />
+    <Content Include="Views\Home\ArithmeticEncode.cshtml" />
+    <Content Include="Views\Home\BWEncode.cshtml" />
+    <Content Include="Views\Home\LZ78Encode.cshtml" />
+    <Content Include="Views\Home\RLEEncode.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
