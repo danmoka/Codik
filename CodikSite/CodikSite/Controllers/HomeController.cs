@@ -149,7 +149,11 @@ namespace CodikSite.Controllers
             toEncode = toEncode.Replace("\r\n", "\n");
             try
             {
-                ViewData["Encoded"] = new ArithmeticCoding().Encode(toEncode, out double compressionRatio);
+                double compressionRatio = 0;
+                unchecked
+                {
+                    ViewData["Encoded"] = new ArithmeticCoding().Encode(toEncode, out compressionRatio);
+                }
                 ViewData["CompressionDegree"] = string.Format("{0:0.##}", compressionRatio);
             }
             catch (Exception e)
@@ -279,7 +283,68 @@ namespace CodikSite.Controllers
             return View("RLEEncode");
         }
         #endregion
+
+        public ActionResult HammingEncode()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult HammingEncode(string toEncode)
+        {
+            if (toEncode.Length == 0)
+            {
+                ViewData["ArgumentException"] = "Пустая строка, пожалуйста введите что-нибудь.";
+                return View();
+            }
+
+            toEncode = toEncode.Replace("\r\n", "\n");
+            try
+            {
+                double compressionRatio = 0;
+                unchecked
+                {
+                    ViewData["Encoded"] = new RLE().Encode(toEncode, out compressionRatio);
+                }
+                ViewData["CompressionDegree"] = string.Format("{0:0.##}", compressionRatio);
+            }
+            catch (Exception e)
+            {
+                ViewData["Error"] = e.Message;
+            }
+
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult UploadedTextHammingEncode(IEnumerable<HttpPostedFileBase> fileUpload)
+        {
+            SetTextToView(fileUpload);
+
+            return View("HammingEncode");
+        }
         #region Decode
+        [HttpPost]
+        public ActionResult UploadedTextHamming(IEnumerable<HttpPostedFileBase> fileUpload)
+        {
+            SetTextToView(fileUpload);
+
+            return View("HammingDecode");
+        }
+
+        [HttpPost]
+        public ActionResult HammingDecode(string toDecode)
+        {
+            Decode(toDecode, new RLE());
+
+            return View();
+        }
+
+        public ActionResult HammingDecode()
+        {
+            return View();
+        }
+
         [HttpPost]
         public ActionResult UploadedTextHuffman(IEnumerable<HttpPostedFileBase> fileUpload)
         {
@@ -287,6 +352,7 @@ namespace CodikSite.Controllers
 
             return View("HuffmanDecode");
         }
+
         [HttpPost]
         public ActionResult UploadedTextRLE(IEnumerable<HttpPostedFileBase> fileUpload)
         {

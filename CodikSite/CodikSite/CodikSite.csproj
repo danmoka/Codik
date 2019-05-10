@@ -190,6 +190,8 @@
     <Content Include="Views\Home\BWEncode.cshtml" />
     <Content Include="Views\Home\LZ78Encode.cshtml" />
     <Content Include="Views\Home\RLEEncode.cshtml" />
+    <Content Include="Views\Home\HammingEncode.cshtml" />
+    <Content Include="Views\Home\HammingDecode.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />
