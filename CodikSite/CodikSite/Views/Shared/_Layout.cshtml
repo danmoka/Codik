@@ -23,10 +23,22 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Закодировать", "Encode", "Home", new { @style = "color:#77c700;" })</li>
                     <li class="dropdown text-danger">
                         <a id="drop1" href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <span class="icon-bar">Декодировать</span>
+                            <span class="icon-next" style="color:lawngreen">Закодировать</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>@Html.ActionLink("Хаффман", "HuffmanDecode", "Home")</li>
+                            <li>@Html.ActionLink("Арифметическое", "ArithmeticDecode", "Home")</li>
+                            <li>@Html.ActionLink("LZ78", "LZ78Decode", "Home")</li>
+                            <li>@Html.ActionLink("BW", "BWDecode", "Home")</li>
+                            <li>@Html.ActionLink("RLE", "RLEDecode", "Home")</li>
+                        </ul>
+                    </li>
+                    @*<li>@Html.ActionLink("Закодировать", "Encode", "Home", new { @style = "color:#77c700;" })</li>*@
+                    <li class="dropdown text-danger">
+                        <a id="drop2" href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <span class="icon-bar" style="color:darkorange">Декодировать</span>
                         </a>
                         <ul class="dropdown-menu">
                             <li>@Html.ActionLink("Хаффман", "HuffmanDecode", "Home")</li>
