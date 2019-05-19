@@ -1,6 +1,8 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
+    <link href="/favicon.ico" rel="shortcut icon" runat="server" type="image/x-icon" />
+    <link href="/favicon.ico" rel="icon" runat="server" type="image/ico" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,10 +23,23 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Закодировать", "Encode", "Home", new { @style = "color:#77c700;" })</li>
                     <li class="dropdown text-danger">
                         <a id="drop1" href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <span class="icon-bar">Декодировать</span>
+                            <span class="icon-next" style="color:lawngreen">Закодировать</span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li>@Html.ActionLink("Хаффман", "HuffmanEncode", "Home")</li>
+                            <li>@Html.ActionLink("Арифметическое", "ArithmeticEncode", "Home")</li>
+                            <li>@Html.ActionLink("LZ78", "LZ78Encode", "Home")</li>
+                            <li>@Html.ActionLink("BW", "BWEncode", "Home")</li>
+                            <li>@Html.ActionLink("RLE", "RLEEncode", "Home")</li>
+                            <li>@Html.ActionLink("Код Хэмминга", "HammingEncode", "Home")</li>
+                        </ul>
+                    </li>
+                    @*<li>@Html.ActionLink("Закодировать", "Encode", "Home", new { @style = "color:#77c700;" })</li>*@
+                    <li class="dropdown text-danger">
+                        <a id="drop2" href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            <span class="icon-bar" style="color:darkorange">Декодировать</span>
                         </a>
                         <ul class="dropdown-menu">
                             <li>@Html.ActionLink("Хаффман", "HuffmanDecode", "Home")</li>
@@ -32,6 +47,7 @@
                             <li>@Html.ActionLink("LZ78", "LZ78Decode", "Home")</li>
                             <li>@Html.ActionLink("BW", "BWDecode", "Home")</li>
                             <li>@Html.ActionLink("RLE", "RLEDecode", "Home")</li>
+                            <li>@Html.ActionLink("Код Хэмминга", "HammingDecode", "Home")</li>
                         </ul>
                     </li>
                     <li>@Html.ActionLink("О программе", "About", "Home")</li>

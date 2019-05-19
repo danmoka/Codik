@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "RLE";
+    ViewBag.Title = "Арифметическое кодирование";
 }
 
 @if (ViewData["ArgumentException"] != null)
@@ -9,7 +9,7 @@
         <button type="button" class="close" data-dismiss="alert">
             x
         </button>
-        @ViewData["ArgumentException"] @*Пожалуйста, проверьте соответствие введенных данных нужному формату.*@
+        @ViewData["ArgumentException"]
     </div>
 }
 
@@ -24,23 +24,22 @@
 }
 
 <h2>@ViewBag.Title</h2>
-<form action="~/Home/RLEDecode" method="post">
+<form action="~/Home/ArithmeticEncode" method="post">
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <textarea class="form-control" name="toDecode" value="" wrap="soft" rows="6" placeholder="Ввести код">@ViewData["UploadedText"]</textarea>
-                <small id="help" class="form-text text-muted">Пожалуйста, введите код в виде: (м,1)(а,1)(м,1)(а,1)( ,1)(м,1)(ы,1)(л,1)(а,1)( ,1)(р,1)(а,1)(м,1)(у,1)</small>
+                <textarea class="form-control" id="ControlTextareaInputText" name="toEncode" value="" wrap="soft" rows="6" placeholder="Ввести текст">@ViewData["UploadedText"]</textarea>
             </div>
         </div>
     </div>
     <div class="row">
-        <div class=" col-md-6">
-            <button class="btn btn-success pull-right" style="margin-bottom:3%">Декодировать</button>
+        <div class="col-md-6">
+            <button class="btn btn-success pull-right" style="margin-bottom:3%">Закодировать</button>
         </div>
     </div>
 </form>
 <div class="form-group">
-    @using (Html.BeginForm("UploadedTextLRLEDecode", "home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    @using (Html.BeginForm("UploadedTextArithmeticEncode", "home", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         <div class="row">
             <div class=" col-md-4">
@@ -59,14 +58,20 @@
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <p class="lead">Результат</p>
-                <textarea class="form-control" name="result" value="" wrap="soft" rows="6" readonly>@ViewData["Decoded"]</textarea>
+                <p class="lead">Результат кодирования</p>
+                <textarea class="form-control" id="ControlTextareaOutputText" name="result" wrap="soft" rows="6" readonly>@ViewData["Encoded"]</textarea>
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col-md-2">
-            <button class="btn pull-left">Скачать</button>
+            <div class="form-group">
+                <textarea class="form-control" wrap="soft" rows="1" readonly>@ViewData["CompressionDegree"]</textarea>
+                <small id="help" class="form-text text-muted">Степень сжатия</small>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <button class="btn pull-right">Скачать</button>
         </div>
     </div>
 </form>

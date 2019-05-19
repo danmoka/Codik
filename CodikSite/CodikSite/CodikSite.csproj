@@ -151,8 +151,10 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="icon1.ico" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <None Include="Properties\PublishProfiles\Codik - Web Deploy.pubxml" />
     <None Include="Scripts\jquery-3.3.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.3.1.js" />
     <Content Include="Scripts\jquery-3.3.1.min.js" />
@@ -179,12 +181,19 @@
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Home\Encode.cshtml" />
     <Content Include="Views\Home\ArithmeticDecode.cshtml" />
     <Content Include="Views\Home\BWDecode.cshtml" />
-    <Content Include="Views\Home\Encode.cshtml" />
     <Content Include="Views\Home\HuffmanDecode.cshtml" />
     <Content Include="Views\Home\LZ78Decode.cshtml" />
     <Content Include="Views\Home\RLEDecode.cshtml" />
+    <Content Include="Views\Home\HuffmanEncode.cshtml" />
+    <Content Include="Views\Home\ArithmeticEncode.cshtml" />
+    <Content Include="Views\Home\BWEncode.cshtml" />
+    <Content Include="Views\Home\LZ78Encode.cshtml" />
+    <Content Include="Views\Home\RLEEncode.cshtml" />
+    <Content Include="Views\Home\HammingEncode.cshtml" />
+    <Content Include="Views\Home\HammingDecode.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Models\" />

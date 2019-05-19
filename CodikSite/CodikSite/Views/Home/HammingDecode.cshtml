@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "RLE";
+    ViewBag.Title = "Код Хэмминга";
 }
 
 @if (ViewData["ArgumentException"] != null)
@@ -22,14 +22,12 @@
         Упс, что-то пошло не так... @ViewData["Error"]
     </div>
 }
-
 <h2>@ViewBag.Title</h2>
-<form action="~/Home/RLEDecode" method="post">
+<form action="~/Home/HammingDecode" method="post">
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
-                <textarea class="form-control" name="toDecode" value="" wrap="soft" rows="6" placeholder="Ввести код">@ViewData["UploadedText"]</textarea>
-                <small id="help" class="form-text text-muted">Пожалуйста, введите код в виде: (м,1)(а,1)(м,1)(а,1)( ,1)(м,1)(ы,1)(л,1)(а,1)( ,1)(р,1)(а,1)(м,1)(у,1)</small>
+                <textarea class="form-control" name="toDecode" value="" wrap="soft" rows="3" placeholder="Ввести код">@ViewData["UploadedText"]</textarea>
             </div>
         </div>
     </div>
@@ -40,7 +38,7 @@
     </div>
 </form>
 <div class="form-group">
-    @using (Html.BeginForm("UploadedTextLRLEDecode", "home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+    @using (Html.BeginForm("UploadedTextHammingDecode", "home", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         <div class="row">
             <div class=" col-md-4">
@@ -60,13 +58,21 @@
         <div class="col-md-6">
             <div class="form-group">
                 <p class="lead">Результат</p>
-                <textarea class="form-control" name="result" value="" wrap="soft" rows="6" readonly>@ViewData["Decoded"]</textarea>
+                <textarea class="form-control" name="result" wrap="soft" rows="6" readonly>@ViewData["Decoded"]</textarea>
             </div>
         </div>
     </div>
     <div class="row">
         <div class="col-md-2">
-            <button class="btn pull-left">Скачать</button>
+            <div class="form-group">
+                <textarea class="form-control" name="result" wrap="soft" rows="1" cols="4" readonly>@ViewData["ErrorPosition"]</textarea>
+                <small class="form-text text-muted">
+                    Позиция ошибки.
+                </small>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <button class="btn pull-right">Скачать</button>
         </div>
     </div>
 </form>
