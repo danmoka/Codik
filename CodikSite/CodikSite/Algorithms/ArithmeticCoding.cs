@@ -53,8 +53,8 @@ namespace CodikSite.Algorithms
             mid.Append((decimal)(Left + (Right - Left) / 2));
             mid.Remove(0, 2);
             output.Append(mid);
-            var kk = BitHacks.GetHighestBitPosition(char.MaxValue);
-            compressionRatio = (double)((double)(Enter.Length * BitHacks.GetHighestBitPosition(char.MaxValue)) / (double)(output.Length * 4));
+            var kk = BitHacks.GetRealSizeForNumber(char.MaxValue);
+            compressionRatio = (double)((double)(Enter.Length * BitHacks.GetRealSizeForNumber(char.MaxValue)) / (double)(output.Length * 4));
             output.Append(",");
             output.Append(GetFrequencyDictionary());
 
