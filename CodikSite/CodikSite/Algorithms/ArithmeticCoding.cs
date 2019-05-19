@@ -1,3 +1,4 @@
+using System.Web;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +27,6 @@ namespace CodikSite.Algorithms
             Left = 0;
             Right = 1;
         }
-
         public string Encode(string Enter, out double compressionRatio)
         {
             Left = 0;
@@ -38,11 +38,11 @@ namespace CodikSite.Algorithms
             foreach (char letter in Enter)
             {
                 int index = letters.IndexOf(letter);
-                decimal range = Right - Left;
-                Right = Left + range * frequencies[index];
+                decimal range = (decimal)(Right - Left);
+                Right = (decimal)(Left + range * frequencies[index]);
                 if (index != 0)
                 {
-                    Left += range * frequencies[index - 1];
+                    Left += (decimal)(range * frequencies[index - 1]);
                 }
                 if ((int)Math.Round(Left * 100, 0) == (int)Math.Round(Right * 100, 0))
                 {
@@ -50,20 +50,18 @@ namespace CodikSite.Algorithms
                 }
             }
             var mid = new StringBuilder();
-            mid.Append((Left + (Right - Left) / 2));
+            mid.Append((decimal)(Left + (Right - Left) / 2));
             mid.Remove(0, 2);
             output.Append(mid);
-            var kk = BitHacks.GetRealSizeForNumber(char.MaxValue);
-            compressionRatio = (double)Enter.Length * BitHacks.GetRealSizeForNumber(char.MaxValue) /
-                ((double)output.Length * 4);          
+            var kk = BitHacks.GetHighestBitPosition(char.MaxValue);
+            compressionRatio = (double)((double)(Enter.Length * BitHacks.GetHighestBitPosition(char.MaxValue)) / (double)(output.Length * 4));
             output.Append(",");
             output.Append(GetFrequencyDictionary());
 
-            
+
 
             return output.ToString();
         }
-
         public string Decode(string Enter)
         {
             SetFrequencyDictionary(Enter);
@@ -72,7 +70,7 @@ namespace CodikSite.Algorithms
             output = new StringBuilder();
             var entd = new StringBuilder("0,");
             entd.Append(str[0]);
-           decimal enter = Convert.ToDecimal(entd.ToString());
+            decimal enter = decimal.Parse(entd.ToString().Substring(0,Math.Min(31,entd.Length)));
             Left = 0;
             Right = 1;
             for (int i = 0; i < count; i++)
@@ -86,7 +84,7 @@ namespace CodikSite.Algorithms
                 if ((int)Math.Round(Left * 100, 0) == (int)Math.Round(Right * 100, 0))
                 {
                     ChangeBordersDecode(ref entd);
-                    enter = Convert.ToDecimal(entd.ToString());
+                    enter = decimal.Parse(entd.ToString().Substring(0, Math.Min(31, entd.Length)));
                 }
 
             }
@@ -94,7 +92,6 @@ namespace CodikSite.Algorithms
             return output.ToString();
 
         }
-
         private int BinarySearch_Rec(decimal key, int left, int right, decimal range)
         {
             int mid = left + (right - left) / 2;
@@ -113,7 +110,6 @@ namespace CodikSite.Algorithms
             else
                 return BinarySearch_Rec(key, mid + 1, right, range);
         }
-
         public string GetFrequencyDictionary()
         {
             StringBuilder output = new StringBuilder();
@@ -132,7 +128,6 @@ namespace CodikSite.Algorithms
             output.Append('}');
             return output.ToString();
         }
-
         public void SetFrequencyDictionary(string Dictionary)
         {
             letters = new List<char>();
@@ -184,7 +179,6 @@ namespace CodikSite.Algorithms
 
             CreateLine(n);
         }
-
         private void CreateDictionary(string Enter)
         {
             int n = Enter.Length;
@@ -202,7 +196,6 @@ namespace CodikSite.Algorithms
             }
             CreateLine(n);
         }
-
         private void CreateLine(int n)
         {
             Count = 0;
@@ -211,12 +204,11 @@ namespace CodikSite.Algorithms
             foreach (var pair in sorteddic)
             {
                 letters.Add(pair.Key);
-                border += (decimal)pair.Value*(decimal)Math.Pow(n,-1);
+                border += (decimal)pair.Value * (decimal)Math.Pow(n, -1);
                 frequencies.Add(border);
                 Count += pair.Value;
             }
         }
-
         private void ChangeBorders(ref StringBuilder ou)
         {
             var cl = new StringBuilder();
@@ -238,11 +230,10 @@ namespace CodikSite.Algorithms
                     break;
                 }
             }
-            Left = Convert.ToDecimal(cl.ToString());
-            Right = Convert.ToDecimal(cr.ToString());
+            Left = decimal.Parse(cl.ToString());
+            Right = decimal.Parse(cr.ToString());
 
         }
-
         private void ChangeBordersDecode(ref StringBuilder stringBuilder)
         {
             var cl = new StringBuilder();
@@ -260,8 +251,8 @@ namespace CodikSite.Algorithms
                     break;
                 }
             }
-            Left = Convert.ToDecimal(cl.ToString());
-            Right = Convert.ToDecimal(cr.ToString());
+            Left = decimal.Parse(cl.ToString());
+            Right = decimal.Parse(cr.ToString());
         }
     }
 }
