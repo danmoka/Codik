@@ -1,5 +1,5 @@
-using System.Web;
-using System;
+﻿using System;
+using System.Numerics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -7,252 +7,251 @@ using System.Text.RegularExpressions;
 
 namespace CodikSite.Algorithms
 {
-    /// <summary>
-    /// Arithmetic coding
-    /// </summary>
     public class ArithmeticCoding : ITextEncodingAlgorithm
     {
-        private Dictionary<char, int> dictionary;
-        private List<char> letters;
-        private List<decimal> frequencies;
-        private decimal Left, Right;
-        private StringBuilder output;
-        private int Count;
+        private struct RationalNumber
+        {
+            public BigInteger Numerator { get; private set; }
+            public BigInteger Denominator { get; private set; }
 
-        public ArithmeticCoding()
-        {
-            dictionary = new Dictionary<char, int>();
-            letters = new List<char>();
-            frequencies = new List<decimal>();
-            Left = 0;
-            Right = 1;
-        }
-        public string Encode(string Enter, out double compressionRatio)
-        {
-            Left = 0;
-            Right = 1;
-            output = new StringBuilder();
-            if (dictionary.Count == 0)
-                CreateDictionary(Enter);
-            int count = Enter.Length;
-            foreach (char letter in Enter)
+            public RationalNumber(BigInteger numerator, BigInteger denominator)
             {
-                int index = letters.IndexOf(letter);
-                decimal range = (decimal)(Right - Left);
-                Right = (decimal)(Left + range * frequencies[index]);
-                if (index != 0)
+                if (denominator.IsZero)
                 {
-                    Left += (decimal)(range * frequencies[index - 1]);
+                    throw new ArgumentOutOfRangeException();
                 }
-                if ((int)Math.Round(Left * 100, 0) == (int)Math.Round(Right * 100, 0))
+                var gcd = BigInteger.GreatestCommonDivisor(numerator, denominator);
+                this.Numerator = numerator / gcd;
+                this.Denominator = denominator / gcd;
+
+                if (Denominator < 0)
                 {
-                    ChangeBorders(ref output);
+                    Numerator *= -1;
+                    Denominator *= -1;
                 }
             }
-            var mid = new StringBuilder();
-            mid.Append((decimal)(Left + (Right - Left) / 2));
-            mid.Remove(0, 2);
-            output.Append(mid);
-            var kk = BitHacks.GetRealSizeForNumber(char.MaxValue);
-            compressionRatio = (double)((double)(Enter.Length * BitHacks.GetRealSizeForNumber(char.MaxValue)) / (double)(output.Length * 4));
-            output.Append(",");
-            output.Append(GetFrequencyDictionary());
 
-
-
-            return output.ToString();
-        }
-        public string Decode(string Enter)
-        {
-            SetFrequencyDictionary(Enter);
-            var str = Enter.Split(',');
-            int count = Count;
-            output = new StringBuilder();
-            var entd = new StringBuilder("0,");
-            entd.Append(str[0]);
-            decimal enter = decimal.Parse(entd.ToString().Substring(0,Math.Min(31,entd.Length)));
-            Left = 0;
-            Right = 1;
-            for (int i = 0; i < count; i++)
+            public static RationalNumber operator +(RationalNumber first, RationalNumber second)
             {
-                int index = 0;
-
-
-                index = BinarySearch_Rec(enter, 0, frequencies.Count - 1, Right - Left);
-                output.Append(letters[index]);
-
-                if ((int)Math.Round(Left * 100, 0) == (int)Math.Round(Right * 100, 0))
-                {
-                    ChangeBordersDecode(ref entd);
-                    enter = decimal.Parse(entd.ToString().Substring(0, Math.Min(31, entd.Length)));
-                }
-
+                return new RationalNumber(first.Numerator * second.Denominator +
+                    first.Denominator * second.Numerator, first.Denominator * second.Denominator);
             }
 
-            return output.ToString();
-
-        }
-        private int BinarySearch_Rec(decimal key, int left, int right, decimal range)
-        {
-            int mid = left + (right - left) / 2;
-            decimal d = Left + (decimal)(range * frequencies[mid]);
-            if (left == right)
+            public static RationalNumber operator -(RationalNumber first, RationalNumber second)
             {
-                Right = Left + range * frequencies[mid];
-                if (mid != 0)
-                {
-                    Left += range * frequencies[mid - 1];
-                }
-                return mid;
+                return new RationalNumber(first.Numerator * second.Denominator -
+                    first.Denominator * second.Numerator, first.Denominator * second.Denominator);
             }
-            else if (d > key)
-                return BinarySearch_Rec(key, left, mid, range);
-            else
-                return BinarySearch_Rec(key, mid + 1, right, range);
-        }
-        public string GetFrequencyDictionary()
-        {
-            StringBuilder output = new StringBuilder();
-            int count = letters.Count;
 
-            output.Append('{');
-            foreach (var ch in dictionary)
+            public static RationalNumber operator *(RationalNumber first, RationalNumber second)
             {
-                output.Append('[');
-                output.Append(ch.Key);
-                output.Append('-');
-                output.Append(ch.Value);
-                output.Append(']');
-
+                return new RationalNumber(first.Numerator * second.Numerator,
+                    first.Denominator * second.Denominator);
             }
-            output.Append('}');
-            return output.ToString();
-        }
-        public void SetFrequencyDictionary(string Dictionary)
-        {
-            letters = new List<char>();
-            frequencies = new List<decimal>();
-            dictionary = new Dictionary<char, int>();
-            int n = 0;
 
-            var codedTextPattern = @"\{(\[(.|\n)\-\d+\])+\}\z";
-            var matchAllCodes = Regex.Match(Dictionary, codedTextPattern);
-            if (matchAllCodes.Success)
+            public static RationalNumber operator /(RationalNumber first, RationalNumber second)
             {
-                var singleCodePattern = @"\[(.|\n)\-\d+\]";
+                return new RationalNumber(first.Numerator * second.Denominator,
+                    first.Denominator * second.Numerator);
+            }
 
-                foreach (Match matchCode in Regex.Matches(matchAllCodes.Value, singleCodePattern))
+            public static bool operator <(RationalNumber first, RationalNumber second)
+            {
+                return (first - second).Numerator < 0;
+            }
+
+            public static bool operator >(RationalNumber first, RationalNumber second)
+            {
+                return (first - second).Numerator > 0;
+            }
+
+            public static bool operator <=(RationalNumber first, RationalNumber second)
+            {
+                return (first - second).Numerator <= 0;
+            }
+
+            public static bool operator >=(RationalNumber first, RationalNumber second)
+            {
+                return (first - second).Numerator >= 0;
+            }
+
+            public static implicit operator RationalNumber(BigInteger x)
+            {
+                return new RationalNumber(x, 1);
+            }
+
+            public static implicit operator RationalNumber(int x)
+            {
+                return new RationalNumber(x, 1);
+            }
+
+            public override string ToString()
+            {
+                return string.Format("{0}/{1}", this.Numerator.ToString(), this.Denominator.ToString());
+            }
+        }
+
+        private struct Border
+        {
+            public RationalNumber Left { get; private set; }
+            public RationalNumber Right { get; private set; }
+
+            public Border(RationalNumber left, RationalNumber right)
+            {
+                this.Left = left;
+                this.Right = right;
+            }
+
+        }
+
+        private Dictionary<char, int> CountEachCharacter(IEnumerable<char> characters)
+        {
+            var dictionary = new Dictionary<char, int>();
+
+            foreach (var symbol in characters)
+            {
+                if (dictionary.ContainsKey(symbol))
                 {
-                    var code = int.Parse(matchCode.Value.Substring(3, matchCode.Value.Length - 4));
-                    n += code;
-                    dictionary.Add(matchCode.Value[1], code);
+                    dictionary[symbol]++;
                 }
+                else
+                {
+                    dictionary.Add(symbol, 1);
+                }
+            }
+
+            return dictionary;
+        }
+
+        private string ToStringFrequencyDictionary(Dictionary<char, int> frequencies)
+        {
+            var code = new StringBuilder();
+            code.Append('{');
+
+            foreach (var pair in frequencies)
+            {
+                code.Append(string.Format("[{0}-{1}]", pair.Key, pair.Value));
+            }
+
+            code.Append('}');
+            return code.ToString();
+        }
+
+        private Dictionary<char, int> GetFrequencyDictionary(string codedText,
+            out int dictionaryIndex, out int numberCharacters)
+        {
+            numberCharacters = 0;
+            var frequencyDictionaryPattern = @"\{(\[(.|\n)\-\d+\])+\}\z";
+            var dictionaryMatch = Regex.Match(codedText, frequencyDictionaryPattern);
+            if (dictionaryMatch.Success)
+            {
+                dictionaryIndex = dictionaryMatch.Index;
+                var keyValuePairPattern = @"\[(.|\n)\-\d+\]";
+                var dictionary = new Dictionary<char, int>();
+
+                foreach (Match keyValueMatch in Regex.Matches(dictionaryMatch.Value, keyValuePairPattern))
+                {
+                    var number = int.Parse(keyValueMatch.Value.Substring(3, keyValueMatch.Value.Length - 4));
+                    numberCharacters += number;
+                    dictionary.Add(keyValueMatch.Value[1], number);
+                }
+
+                return dictionary;
             }
             else
             {
                 throw new ArgumentException();
             }
-
-
-            //string mask = @"[(.|\n)\-\d+]";
-            //var matches = Regex.Matches(Dictionary, mask);
-            //foreach (Match match in matches)
-            //{
-            //    int freq;
-
-            //    string[] value = match.Value.Split(':');
-            //    char letter;
-            //    if (value[0] == "")
-            //    {
-            //        letter = ':';
-            //        freq = Convert.ToInt32(value[2]);
-            //    }
-            //    else
-            //    {
-            //        letter = (value[0][0]);
-
-            //        freq = Convert.ToInt32(value[1]);
-            //    }
-            //    n += freq;
-            //    dictionary.Add(letter, freq);
-            //}
-
-            CreateLine(n);
         }
-        private void CreateDictionary(string Enter)
-        {
-            int n = Enter.Length;
 
-            for (int i = 0; i < n; i++)
+        private Dictionary<char, Border> GetBorders(Dictionary<char, int> frequencies, int numberCharacters)
+        {
+            var borders = new Dictionary<char, Border>(frequencies.Count);
+            int sum = 0;
+
+            foreach (var elem in from item in frequencies orderby item.Key select item)
             {
-                if (dictionary.ContainsKey(Enter[i]))
+                var left = sum;
+                sum += elem.Value;
+                borders.Add(elem.Key, new Border(new RationalNumber(left, numberCharacters),
+                    new RationalNumber(sum, numberCharacters)));
+            }
+
+            return borders;
+        }
+
+        private int GetFirstDigitAfterDot(RationalNumber number)
+        {
+            return (int)(10 * number.Numerator / number.Denominator);
+        }
+
+        private IEnumerable<int> DeleteSameDigit(ref RationalNumber left, ref RationalNumber right)
+        {
+            var someDigits = new List<int>();
+            int digit = GetFirstDigitAfterDot(left);
+
+            while (digit == GetFirstDigitAfterDot(right))
+            {
+                someDigits.Add(digit);
+                left = left * 10 - digit;
+                right = right * 10 - digit;
+            }
+
+            return someDigits;
+        }
+
+        public string Encode(string sourceText, out double compressionRatio)
+        {
+            var frequencies = CountEachCharacter(sourceText);
+            var borders = GetBorders(frequencies, sourceText.Length);
+            var frequenciesCode = ToStringFrequencyDictionary(frequencies);
+            frequencies = null;
+            var code = new StringBuilder();
+            RationalNumber left = 0, right = 1;
+
+            foreach (var symbol in sourceText)
+            {
+                var range = right - left;
+                right = left + range * borders[symbol].Right;
+                left = left + range * borders[symbol].Left;
+
+                foreach (var digit in DeleteSameDigit(ref left, ref right))
                 {
-                    dictionary[Enter[i]]++;
+                    code.Append(digit);
                 }
-                else
+
+            }
+
+            code.Append(GetFirstDigitAfterDot(left) + 1);
+            compressionRatio = (double)sourceText.Length * 16 / code.Length / 4;
+            code.Append(frequenciesCode);
+            return code.ToString();
+        }
+
+        public string Decode(string codedText)
+        {
+            var sourceText = new StringBuilder();
+            var borders = GetBorders(GetFrequencyDictionary(codedText, out int index,
+                out int numberCharacters), numberCharacters);
+
+            RationalNumber code = new RationalNumber(BigInteger.Parse(codedText.Substring(0, index)),
+                BigInteger.Pow(10, index));
+
+            while (sourceText.Length < numberCharacters)
+            {
+                foreach (var pair in borders)
                 {
-                    dictionary.Add((Enter[i]), 1);
+                    var border = pair.Value;
+                    if (border.Left <= code && border.Right >= code)
+                    {
+                        sourceText.Append(pair.Key);
+                        code = (code - border.Left) / (border.Right - border.Left);
+                        break;
+                    }
                 }
             }
-            CreateLine(n);
-        }
-        private void CreateLine(int n)
-        {
-            Count = 0;
-            var sorteddic = dictionary.OrderByDescending(s => s.Value);
-            decimal border = 0;
-            foreach (var pair in sorteddic)
-            {
-                letters.Add(pair.Key);
-                border += (decimal)pair.Value * (decimal)Math.Pow(n, -1);
-                frequencies.Add(border);
-                Count += pair.Value;
-            }
-        }
-        private void ChangeBorders(ref StringBuilder ou)
-        {
-            var cl = new StringBuilder();
-            cl.Append(Left);
-            var cr = new StringBuilder();
-            cr.Append(Right);
 
-            int n = Math.Min(cl.Length, cr.Length);
-            for (int i = 2; i < n; i++)
-            {
-                if (cl[i] == cr[i])
-                {
-                    ou.Append(cl[i]);
-                }
-                else
-                {
-                    cl.Remove(2, i - 2);
-                    cr.Remove(2, i - 2);
-                    break;
-                }
-            }
-            Left = decimal.Parse(cl.ToString());
-            Right = decimal.Parse(cr.ToString());
-
-        }
-        private void ChangeBordersDecode(ref StringBuilder stringBuilder)
-        {
-            var cl = new StringBuilder();
-            cl.Append(Left);
-            var cr = new StringBuilder();
-            cr.Append(Right);
-            int n = Math.Min(cl.Length, cr.Length);
-            for (int i = 2; i < n; i++)
-            {
-                if (cl[i] != cr[i])
-                {
-                    cl.Remove(2, i - 2);
-                    cr.Remove(2, i - 2);
-                    stringBuilder.Remove(2, i - 2);
-                    break;
-                }
-            }
-            Left = decimal.Parse(cl.ToString());
-            Right = decimal.Parse(cr.ToString());
+            return sourceText.ToString();
         }
     }
 }
