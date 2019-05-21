@@ -57,51 +57,42 @@ namespace CodikSite.Algorithms
 
             public static bool operator <(RationalNumber first, RationalNumber second)
             {
-                return (first - second).Numerator < 0;
+                return (first.Numerator * second.Denominator -
+                    first.Denominator * second.Numerator) < 0;
             }
 
             public static bool operator >(RationalNumber first, RationalNumber second)
             {
-                return (first - second).Numerator > 0;
+                return (first.Numerator * second.Denominator -
+                    first.Denominator * second.Numerator) > 0;
             }
 
             public static bool operator <=(RationalNumber first, RationalNumber second)
             {
-                return (first - second).Numerator <= 0;
+                return (first.Numerator * second.Denominator -
+                    first.Denominator * second.Numerator) <= 0;
             }
 
             public static bool operator >=(RationalNumber first, RationalNumber second)
             {
-                return (first - second).Numerator >= 0;
+                return (first.Numerator * second.Denominator -
+                    first.Denominator * second.Numerator) >= 0;
             }
 
-            public static implicit operator RationalNumber(BigInteger x)
+            public static implicit operator RationalNumber(BigInteger number)
             {
-                return new RationalNumber(x, 1);
+                return new RationalNumber(number, 1);
             }
 
-            public static implicit operator RationalNumber(int x)
+            public static implicit operator RationalNumber(int number)
             {
-                return new RationalNumber(x, 1);
+                return new RationalNumber(number, 1);
             }
 
             public override string ToString()
             {
-                return string.Format("{0}/{1}", this.Numerator.ToString(), this.Denominator.ToString());
+                return string.Format("{0}/{1}", this.Numerator, this.Denominator);
             }
-        }
-
-        private struct Border
-        {
-            public RationalNumber Left { get; private set; }
-            public RationalNumber Right { get; private set; }
-
-            public Border(RationalNumber left, RationalNumber right)
-            {
-                this.Left = left;
-                this.Right = right;
-            }
-
         }
 
         private Dictionary<char, int> CountEachCharacter(IEnumerable<char> characters)
@@ -122,34 +113,19 @@ namespace CodikSite.Algorithms
 
             return dictionary;
         }
-
-        private string ToStringFrequencyDictionary(Dictionary<char, int> frequencies)
-        {
-            var code = new StringBuilder();
-            code.Append('{');
-
-            foreach (var pair in frequencies)
-            {
-                code.Append(string.Format("[{0}-{1}]", pair.Key, pair.Value));
-            }
-
-            code.Append('}');
-            return code.ToString();
-        }
-
+        
         private Dictionary<char, int> GetFrequencyDictionary(string codedText,
             out int dictionaryIndex, out int numberCharacters)
         {
-            numberCharacters = 0;
-            var frequencyDictionaryPattern = @"\{(\[(.|\n)\-\d+\])+\}\z";
-            var dictionaryMatch = Regex.Match(codedText, frequencyDictionaryPattern);
-            if (dictionaryMatch.Success)
+            if (Regex.IsMatch(codedText, @"\A\d+\{(\[(.|\n)\-\d+\])+\}\z"))
             {
-                dictionaryIndex = dictionaryMatch.Index;
+                numberCharacters = 0;
+                dictionaryIndex = Regex.Match(codedText, @"\{(\[(.|\n)\-\d+\])+\}\z").Index;
                 var keyValuePairPattern = @"\[(.|\n)\-\d+\]";
                 var dictionary = new Dictionary<char, int>();
 
-                foreach (Match keyValueMatch in Regex.Matches(dictionaryMatch.Value, keyValuePairPattern))
+                foreach (Match keyValueMatch in Regex.Matches(codedText.Substring(dictionaryIndex),
+                    keyValuePairPattern))
                 {
                     var number = int.Parse(keyValueMatch.Value.Substring(3, keyValueMatch.Value.Length - 4));
                     numberCharacters += number;
@@ -161,97 +137,91 @@ namespace CodikSite.Algorithms
             else
             {
                 throw new ArgumentException();
-            }
+            }           
         }
-
-        private Dictionary<char, Border> GetBorders(Dictionary<char, int> frequencies, int numberCharacters)
-        {
-            var borders = new Dictionary<char, Border>(frequencies.Count);
-            int sum = 0;
-
-            foreach (var elem in from item in frequencies orderby item.Key select item)
-            {
-                var left = sum;
-                sum += elem.Value;
-                borders.Add(elem.Key, new Border(new RationalNumber(left, numberCharacters),
-                    new RationalNumber(sum, numberCharacters)));
-            }
-
-            return borders;
-        }
-
+       
         private int GetFirstDigitAfterDot(RationalNumber number)
         {
             return (int)(10 * number.Numerator / number.Denominator);
         }
 
-        private IEnumerable<int> DeleteSameDigit(ref RationalNumber left, ref RationalNumber right)
+        private void DeleteSameDigits(ref RationalNumber left, ref RationalNumber right,
+            StringBuilder code)
         {
-            var someDigits = new List<int>();
             int digit = GetFirstDigitAfterDot(left);
 
             while (digit == GetFirstDigitAfterDot(right))
             {
-                someDigits.Add(digit);
+                code.Append(digit);
                 left = left * 10 - digit;
                 right = right * 10 - digit;
+                digit = GetFirstDigitAfterDot(left);
             }
 
-            return someDigits;
         }
 
         public string Encode(string sourceText, out double compressionRatio)
         {
             var frequencies = CountEachCharacter(sourceText);
-            var borders = GetBorders(frequencies, sourceText.Length);
-            var frequenciesCode = ToStringFrequencyDictionary(frequencies);
-            frequencies = null;
+            var probabilities = new List<RationalNumber>(frequencies.Count + 1)
+            {
+                0
+            };
+            var characterIndexes = new Dictionary<char, int>(frequencies.Count);
+
+            foreach (var pair in from item in frequencies orderby (int)item.Key select item)
+            {
+                characterIndexes.Add(pair.Key, probabilities.Count);
+                probabilities.Add(new RationalNumber(pair.Value, sourceText.Length)
+                    + probabilities[probabilities.Count - 1]);
+            }
+
             var code = new StringBuilder();
             RationalNumber left = 0, right = 1;
 
             foreach (var symbol in sourceText)
             {
+                var index = characterIndexes[symbol];
                 var range = right - left;
-                right = left + range * borders[symbol].Right;
-                left = left + range * borders[symbol].Left;
-
-                foreach (var digit in DeleteSameDigit(ref left, ref right))
-                {
-                    code.Append(digit);
-                }
-
+                right = left + range * probabilities[index];
+                left = left + range * probabilities[index-1];
+                DeleteSameDigits(ref left, ref right, code);
             }
 
             code.Append(GetFirstDigitAfterDot(left) + 1);
-            compressionRatio = (double)sourceText.Length * 16 / code.Length / 4;
-            code.Append(frequenciesCode);
+            compressionRatio = (double)sourceText.Length * 4 / code.Length;
+            code.Append(frequencies.ToSrtingExtension());
             return code.ToString();
         }
 
         public string Decode(string codedText)
         {
             var sourceText = new StringBuilder();
-            var borders = GetBorders(GetFrequencyDictionary(codedText, out int index,
-                out int numberCharacters), numberCharacters);
+            var probabilities = new List<RationalNumber> { 0 };
+            var indexCharacters = new Dictionary<int, char>();
+            int dictionaryIndex, numberCharacters;
 
-            RationalNumber code = new RationalNumber(BigInteger.Parse(codedText.Substring(0, index)),
-                BigInteger.Pow(10, index));
+            foreach (var pair in from item in GetFrequencyDictionary(codedText,
+                out dictionaryIndex, out numberCharacters) orderby (int)item.Key select item)
+            {
+                indexCharacters.Add(probabilities.Count, pair.Key);
+                probabilities.Add(new RationalNumber(pair.Value, numberCharacters)
+                    + probabilities[probabilities.Count - 1]);
+            }
+
+            RationalNumber code = new RationalNumber(BigInteger.Parse(codedText.Substring(0, dictionaryIndex)),
+                BigInteger.Pow(10, dictionaryIndex));
 
             while (sourceText.Length < numberCharacters)
             {
-                foreach (var pair in borders)
-                {
-                    var border = pair.Value;
-                    if (border.Left <= code && border.Right >= code)
-                    {
-                        sourceText.Append(pair.Key);
-                        code = (code - border.Left) / (border.Right - border.Left);
-                        break;
-                    }
-                }
+                int index = probabilities.FindLastIndex(x => (x <= code)) + 1;
+                sourceText.Append(indexCharacters[index]);
+                code = (code - probabilities[index - 1])
+                    / (probabilities[index] - probabilities[index - 1]);                     
             }
 
             return sourceText.ToString();
         }
+
     }
 }

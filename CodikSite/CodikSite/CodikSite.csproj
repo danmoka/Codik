@@ -128,6 +128,7 @@
     <Compile Include="Algorithms\BitHacks.cs" />
     <Compile Include="Algorithms\BWT.cs" />
     <Compile Include="Algorithms\HuffmanCoding.cs" />
+    <Compile Include="Algorithms\IDictionaryExtensions.cs" />
     <Compile Include="Algorithms\ITextEncodingAlgorithm.cs" />
     <Compile Include="Algorithms\LZ78.cs" />
     <Compile Include="Algorithms\RLE.cs" />
