@@ -28,7 +28,9 @@
         <div class="col-md-6">
             <div class="form-group">
                 <textarea class="form-control" name="toDecode" value="" wrap="soft" rows="6" placeholder="Ввести код">@ViewData["UploadedText"]</textarea>
-                <small id="help" class="form-text text-muted">Пожалуйста, введите код в виде: 10102112022002122101222{[а-0][м-1][ы-20][ -21][л-220][р-221][у-222]}</small>
+                <small id="help" class="form-text text-muted">
+                    Пожалуйста, введите код в виде: закодированное сообщение{[символ1-код символа1][символ2-код символа2]...[символN-код символаN]}.
+                    <br />Например, 10110{[c-0][a-10][b-11]}.</small>
             </div>
         </div>
     </div>
@@ -38,7 +40,7 @@
         </div>
     </div>
 </form>
-<div class="form-group">
+@*<div class="form-group">
     @using (Html.BeginForm("UploadedTextHuffmanDecode", "home", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         <div class="row">
@@ -53,7 +55,7 @@
     <small id="help" class="form-text text-muted">
         Пожалуйста, загружайте файл в кодировке Unicode.
     </small>
-</div>
+</div>*@
 <form action="~/Home/GetFile" method="post">
     <div class="row">
         <div class="col-md-6">
