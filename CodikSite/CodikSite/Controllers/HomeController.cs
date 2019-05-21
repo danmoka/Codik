@@ -120,16 +120,18 @@ namespace CodikSite.Controllers
                 ViewData["Error"] = e.Message;
             }
 
+            ViewData["UploadedText"] = toEncode;
+
             return View();
         }
 
-        [HttpPost]
-        public ActionResult UploadedTextHuffmanEncode(IEnumerable<HttpPostedFileBase> fileUpload)
-        {
-            SetTextToView(fileUpload);
+        //[HttpPost]
+        //public ActionResult UploadedTextHuffmanEncode(IEnumerable<HttpPostedFileBase> fileUpload)
+        //{
+        //    SetTextToView(fileUpload);
 
-            return View("HuffmanEncode");
-        }
+        //    return View("HuffmanEncode");
+        //}
         #endregion
         #region ArithmeticEncode
         public ActionResult ArithmeticEncode()
@@ -161,16 +163,18 @@ namespace CodikSite.Controllers
                 ViewData["Error"] = e.Message;
             }
 
+            ViewData["UploadedText"] = toEncode;
+
             return View();
         }
 
-        [HttpPost]
-        public ActionResult UploadedTextArithmeticEncode(IEnumerable<HttpPostedFileBase> fileUpload)
-        {
-            SetTextToView(fileUpload);
+        //[HttpPost]
+        //public ActionResult UploadedTextArithmeticEncode(IEnumerable<HttpPostedFileBase> fileUpload)
+        //{
+        //    SetTextToView(fileUpload);
 
-            return View("ArithmeticEncode");
-        }
+        //    return View("ArithmeticEncode");
+        //}
         #endregion
         #region BWEncode
         public ActionResult BWEncode()
@@ -198,16 +202,18 @@ namespace CodikSite.Controllers
                 ViewData["Error"] = e.Message;
             }
 
+            ViewData["UploadedText"] = toEncode;
+
             return View();
         }
 
-        [HttpPost]
-        public ActionResult UploadedTextBWEncode(IEnumerable<HttpPostedFileBase> fileUpload)
-        {
-            SetTextToView(fileUpload);
+        //[HttpPost]
+        //public ActionResult UploadedTextBWEncode(IEnumerable<HttpPostedFileBase> fileUpload)
+        //{
+        //    SetTextToView(fileUpload);
 
-            return View("BWEncode");
-        }
+        //    return View("BWEncode");
+        //}
         #endregion
         #region LZ78
         public ActionResult LZ78Encode()
@@ -235,16 +241,18 @@ namespace CodikSite.Controllers
                 ViewData["Error"] = e.Message;
             }
 
+            ViewData["UploadedText"] = toEncode;
+
             return View();
         }
 
-        [HttpPost]
-        public ActionResult UploadedTextLZ78Encode(IEnumerable<HttpPostedFileBase> fileUpload)
-        {
-            SetTextToView(fileUpload);
+        //[HttpPost]
+        //public ActionResult UploadedTextLZ78Encode(IEnumerable<HttpPostedFileBase> fileUpload)
+        //{
+        //    SetTextToView(fileUpload);
 
-            return View("LZ78Encode");
-        }
+        //    return View("LZ78Encode");
+        //}
         #endregion
         #region RLEEncode
         public ActionResult RLEEncode()
@@ -272,118 +280,120 @@ namespace CodikSite.Controllers
                 ViewData["Error"] = e.Message;
             }
 
+            ViewData["UploadedText"] = toEncode;
+
             return View();
         }
 
-        [HttpPost]
-        public ActionResult UploadedTextRLEEncode(IEnumerable<HttpPostedFileBase> fileUpload)
-        {
-            SetTextToView(fileUpload);
+        //[HttpPost]
+        //public ActionResult UploadedTextRLEEncode(IEnumerable<HttpPostedFileBase> fileUpload)
+        //{
+        //    SetTextToView(fileUpload);
 
-            return View("RLEEncode");
-        }
+        //    return View("RLEEncode");
+        //}
         #endregion
 
-        public ActionResult HammingEncode()
-        {
-            return View();
-        }
+        //public ActionResult HammingEncode()
+        //{
+        //    return View();
+        //}
 
-        [HttpPost]
-        public ActionResult HammingEncode(string toEncode)
-        {
-            if (toEncode.Length == 0)
-            {
-                ViewData["ArgumentException"] = "Пустая строка, пожалуйста введите что-нибудь.";
-                return View();
-            }
+        //[HttpPost]
+        //public ActionResult HammingEncode(string toEncode)
+        //{
+        //    if (toEncode.Length == 0)
+        //    {
+        //        ViewData["ArgumentException"] = "Пустая строка, пожалуйста введите что-нибудь.";
+        //        return View();
+        //    }
 
-            toEncode = toEncode.Replace("\r\n", "\n");
-            try
-            {
-                double compressionRatio = 0;
-                unchecked
-                {
-                    ViewData["Encoded"] = new RLE().Encode(toEncode, out compressionRatio);
-                }
-                ViewData["CompressionDegree"] = string.Format("{0:0.##}", compressionRatio);
-            }
-            catch (Exception e)
-            {
-                ViewData["Error"] = e.Message;
-            }
+        //    toEncode = toEncode.Replace("\r\n", "\n");
+        //    try
+        //    {
+        //        double compressionRatio = 0;
+        //        unchecked
+        //        {
+        //            ViewData["Encoded"] = new RLE().Encode(toEncode, out compressionRatio);
+        //        }
+        //        ViewData["CompressionDegree"] = string.Format("{0:0.##}", compressionRatio);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        ViewData["Error"] = e.Message;
+        //    }
 
-            return View();
-        }
+        //    return View();
+        //}
 
-        [HttpPost]
-        public ActionResult UploadedTextHammingEncode(IEnumerable<HttpPostedFileBase> fileUpload)
-        {
-            SetTextToView(fileUpload);
+        //[HttpPost]
+        //public ActionResult UploadedTextHammingEncode(IEnumerable<HttpPostedFileBase> fileUpload)
+        //{
+        //    SetTextToView(fileUpload);
 
-            return View("HammingEncode");
-        }
+        //    return View("HammingEncode");
+        //}
         #region Decode
-        [HttpPost]
-        public ActionResult UploadedTextHamming(IEnumerable<HttpPostedFileBase> fileUpload)
-        {
-            SetTextToView(fileUpload);
+        //[HttpPost]
+        //public ActionResult UploadedTextHamming(IEnumerable<HttpPostedFileBase> fileUpload)
+        //{
+        //    SetTextToView(fileUpload);
 
-            return View("HammingDecode");
-        }
+        //    return View("HammingDecode");
+        //}
 
-        [HttpPost]
-        public ActionResult HammingDecode(string toDecode)
-        {
-            Decode(toDecode, new RLE());
+        //[HttpPost]
+        //public ActionResult HammingDecode(string toDecode)
+        //{
+        //    Decode(toDecode, new RLE());
 
-            return View();
-        }
+        //    return View();
+        //}
 
-        public ActionResult HammingDecode()
-        {
-            return View();
-        }
+        //public ActionResult HammingDecode()
+        //{
+        //    return View();
+        //}
 
-        [HttpPost]
-        public ActionResult UploadedTextHuffman(IEnumerable<HttpPostedFileBase> fileUpload)
-        {
-            SetTextToView(fileUpload);
+        //[HttpPost]
+        //public ActionResult UploadedTextHuffman(IEnumerable<HttpPostedFileBase> fileUpload)
+        //{
+        //    SetTextToView(fileUpload);
 
-            return View("HuffmanDecode");
-        }
+        //    return View("HuffmanDecode");
+        //}
 
-        [HttpPost]
-        public ActionResult UploadedTextRLE(IEnumerable<HttpPostedFileBase> fileUpload)
-        {
-            SetTextToView(fileUpload);
+        //[HttpPost]
+        //public ActionResult UploadedTextRLE(IEnumerable<HttpPostedFileBase> fileUpload)
+        //{
+        //    SetTextToView(fileUpload);
 
-            return View("RLEDecode");
-        }
+        //    return View("RLEDecode");
+        //}
 
-        [HttpPost]
-        public ActionResult UploadedTextBW(IEnumerable<HttpPostedFileBase> fileUpload)
-        {
-            SetTextToView(fileUpload);
+        //[HttpPost]
+        //public ActionResult UploadedTextBW(IEnumerable<HttpPostedFileBase> fileUpload)
+        //{
+        //    SetTextToView(fileUpload);
 
-            return View("BWDecode");
-        }
+        //    return View("BWDecode");
+        //}
 
-        [HttpPost]
-        public ActionResult UploadedTextLZ78(IEnumerable<HttpPostedFileBase> fileUpload)
-        {
-            SetTextToView(fileUpload);
+        //[HttpPost]
+        //public ActionResult UploadedTextLZ78(IEnumerable<HttpPostedFileBase> fileUpload)
+        //{
+        //    SetTextToView(fileUpload);
 
-            return View("LZ78Decode");
-        }
+        //    return View("LZ78Decode");
+        //}
 
-        [HttpPost]
-        public ActionResult UploadedTextArithmetic(IEnumerable<HttpPostedFileBase> fileUpload)
-        {
-            SetTextToView(fileUpload);
+        //[HttpPost]
+        //public ActionResult UploadedTextArithmetic(IEnumerable<HttpPostedFileBase> fileUpload)
+        //{
+        //    SetTextToView(fileUpload);
 
-            return View("ArithmeticDecode");
-        }
+        //    return View("ArithmeticDecode");
+        //}
 
         [HttpPost]
         public ActionResult RLEDecode(string toDecode)
@@ -472,6 +482,8 @@ namespace CodikSite.Controllers
             {
                 ViewData["Error"] = e.Message;
             }
+
+            ViewData["UploadedText"] = toDecode;
         }
 
         [HttpPost]
@@ -488,29 +500,29 @@ namespace CodikSite.Controllers
         }
 
 
-        private static string GetText(IEnumerable<HttpPostedFileBase> fileUpload, string uploadedText)
-        {
-            if (fileUpload != null)
-            {
-                foreach (var el in fileUpload)
-                    if (el != null)
-                    {
-                        using (StreamReader st = new StreamReader(el.InputStream, Encoding.Unicode))
-                        {
-                            uploadedText += st.ReadToEnd();
-                        }
-                    }
-            }
+        //private static string GetText(IEnumerable<HttpPostedFileBase> fileUpload, string uploadedText)
+        //{
+        //    if (fileUpload != null)
+        //    {
+        //        foreach (var el in fileUpload)
+        //            if (el != null)
+        //            {
+        //                using (StreamReader st = new StreamReader(el.InputStream, Encoding.Unicode))
+        //                {
+        //                    uploadedText += st.ReadToEnd();
+        //                }
+        //            }
+        //    }
 
-            return uploadedText;
-        }
+        //    return uploadedText;
+        //}
 
 
-        private void SetTextToView(IEnumerable<HttpPostedFileBase> fileUpload)
-        {
-            string uploadedText = string.Empty;
-            uploadedText = GetText(fileUpload, uploadedText);
-            ViewData["UploadedText"] = uploadedText;
-        }
+        //private void SetTextToView(IEnumerable<HttpPostedFileBase> fileUpload)
+        //{
+        //    string uploadedText = string.Empty;
+        //    uploadedText = GetText(fileUpload, uploadedText);
+        //    ViewData["UploadedText"] = uploadedText;
+        //}
     }
 }

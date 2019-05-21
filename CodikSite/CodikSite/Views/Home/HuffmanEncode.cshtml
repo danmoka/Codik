@@ -37,7 +37,7 @@
         <div class="col-md-2">
             <div class="form-group">
                 <input type="number" class="form-control" name="basis" value="2" min="2" max="10" step="1">
-                <small class="form-text text-muted">Для Хаффмана выберите основание.</small>
+                <small class="form-text text-muted">Выберите основание</small>
             </div>
         </div>
         <div class="col-md-4">
@@ -45,7 +45,7 @@
         </div>
     </div>
 </form>
-<div class="form-group">
+@*<div class="form-group">
     @using (Html.BeginForm("UploadedTextHuffmanEncode", "home", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         <div class="row">
@@ -60,7 +60,7 @@
     <small id="help" class="form-text text-muted">
         Пожалуйста, загружайте файл в кодировке Unicode.
     </small>
-</div>
+</div>*@
 <form action="~/Home/GetFile" method="post">
     <div class="row">
         <div class="col-md-6">

@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewBag.Title = "BWT код";
+    ViewBag.Title = "BWT";
 }
 
 <h2>@ViewBag.Title</h2>
@@ -19,7 +19,7 @@
         </div>
     </div>
 </form>
-<div class="form-group">
+@*<div class="form-group">
     @using (Html.BeginForm("UploadedTextBWEncode", "home", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
         <div class="row">
@@ -34,7 +34,7 @@
     <small id="help" class="form-text text-muted">
         Пожалуйста, загружайте файл в кодировке Unicode.
     </small>
-</div>
+</div>*@
 <form action="~/Home/GetFile" method="post">
     <div class="row">
         <div class="col-md-6">
