@@ -72,7 +72,7 @@ namespace CodikSite.Algorithms
             output = new StringBuilder();
             var entd = new StringBuilder("0,");
             entd.Append(str[0]);
-           decimal enter = Convert.ToDecimal(entd.ToString());
+           decimal enter = decimal.Parse(entd.ToString().Substring(0, Math.Min(30,entd.Length)));
             Left = 0;
             Right = 1;
             for (int i = 0; i < count; i++)
@@ -86,7 +86,7 @@ namespace CodikSite.Algorithms
                 if ((int)Math.Round(Left * 100, 0) == (int)Math.Round(Right * 100, 0))
                 {
                     ChangeBordersDecode(ref entd);
-                    enter = Convert.ToDecimal(entd.ToString());
+                    enter = decimal.Parse(entd.ToString().Substring(0, Math.Min(30, entd.Length)));
                 }
 
             }
@@ -238,8 +238,8 @@ namespace CodikSite.Algorithms
                     break;
                 }
             }
-            Left = Convert.ToDecimal(cl.ToString());
-            Right = Convert.ToDecimal(cr.ToString());
+            Left = decimal.Parse(cl.ToString());
+            Right = decimal.Parse(cr.ToString());
 
         }
 
@@ -260,8 +260,8 @@ namespace CodikSite.Algorithms
                     break;
                 }
             }
-            Left = Convert.ToDecimal(cl.ToString());
-            Right = Convert.ToDecimal(cr.ToString());
+            Left = decimal.Parse(cl.ToString());
+            Right = decimal.Parse(cr.ToString());
         }
     }
 }
