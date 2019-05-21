@@ -49,6 +49,7 @@
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Numerics" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -127,16 +128,19 @@
     <Compile Include="Algorithms\BitHacks.cs" />
     <Compile Include="Algorithms\BWT.cs" />
     <Compile Include="Algorithms\HuffmanCoding.cs" />
+    <Compile Include="Algorithms\IDictionaryExtensions.cs" />
     <Compile Include="Algorithms\ITextEncodingAlgorithm.cs" />
     <Compile Include="Algorithms\LZ78.cs" />
     <Compile Include="Algorithms\RLE.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Algorithms\LinearCode%285,2%29.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Algorithms\HammingCode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
