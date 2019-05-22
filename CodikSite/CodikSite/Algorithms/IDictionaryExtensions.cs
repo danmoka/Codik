@@ -30,5 +30,6 @@ namespace CodikSite.Algorithms
                 throw new ArgumentNullException();
             }  
         }
+
     }
 }

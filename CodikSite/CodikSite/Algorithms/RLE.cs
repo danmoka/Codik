@@ -17,20 +17,25 @@ namespace CodikSite.Algorithms
 
             for (int i = 1; i < sourceText.Length; i++)
             {
-                if (sourceText[i - 1] == sourceText[i]) charCounter++;
+                if (sourceText[i - 1] == sourceText[i])
+                {
+                    charCounter++;
+                }
                 else
                 {
                     answer.Append(string.Format("({0},{1})", sourceText[i - 1], charCounter));
-                    if (charCounter > maxCharCounter) maxCharCounter = charCounter;
+                    if (charCounter > maxCharCounter)
+                    {
+                        maxCharCounter = charCounter;
+                    }
                     blockСounter++;
                     charCounter = 1;
                 }
             }
 
             answer.Append(string.Format("({0},{1})", sourceText[sourceText.Length - 1], charCounter));
-
             double charSize = BitHacks.GetRealSizeForNumber(char.MaxValue);
-            compressionRatio = (sourceText.Length * charSize) /
+            compressionRatio = (sourceText.Length * 16) /
                 (blockСounter * (BitHacks.GetRealSizeForNumber(maxCharCounter) + charSize));
 
             return answer.ToString();
@@ -39,8 +44,7 @@ namespace CodikSite.Algorithms
 
         public string Decode(string codedText)
         {
-            var codedTextPattern = @"\A(\((.|\n),\d+\))+\z";
-            if (Regex.Match(codedText, codedTextPattern).Success)
+            if (Regex.IsMatch(codedText, @"\A(\((.|\n),\d+\))+\z"))
             {
                 var singleCodePattern = @"\((.|\n),\d+\)";
                 var answer = new StringBuilder(codedText.Length);
@@ -53,8 +57,12 @@ namespace CodikSite.Algorithms
 
                 return answer.ToString();
             }
-            else throw new ArgumentException();
+            else
+            {
+                throw new ArgumentException();
+            }
         }
+
     }
 
 }

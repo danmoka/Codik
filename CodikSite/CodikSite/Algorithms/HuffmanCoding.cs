@@ -14,120 +14,130 @@ namespace CodikSite.Algorithms
     {
         private readonly int _numberSystem;
 
-        public HuffmanCoding()
+        public HuffmanCoding() : this(2)
         {
-            this._numberSystem = 2;
+
         }
 
         public HuffmanCoding(int numberSystem)
         {
-            if (numberSystem < 2) throw new ArgumentException();
-            if (numberSystem > 10) throw new ArgumentException();
+            if (numberSystem < 2)
+            {
+                throw new ArgumentException();
+            }
+            if (numberSystem > 10)
+            {
+                throw new ArgumentException();
+            }
             this._numberSystem = numberSystem;
         }
 
-        public string Encode(string sourceText, out double compressionRatio)
+        private Dictionary<char, int> GetFrequencyDictionary(string text)
         {
-            var codes = CreateCodeWords(sourceText, _numberSystem);
-            var builder = Coder.GetCodedMessageBuilder(sourceText, codes);
+            var frequencyDictionary = new Dictionary<char, int>();
 
-            compressionRatio = (sourceText.Length * (double)BitHacks.GetRealSizeForNumber(char.MaxValue))
-                / ((double)BitHacks.GetRealSizeForNumber((uint)Math.Min(codes.Count, _numberSystem) - 1)
-                * builder.Length);
+            foreach (char symbol in text)
+            {
+                if (frequencyDictionary.ContainsKey(symbol))
+                {
+                    frequencyDictionary[symbol]++;
+                }
+                else
+                {
+                    frequencyDictionary.Add(symbol, 1);
+                }
+            }
 
-            return Coder.AddCodeWords(builder, codes).ToString();
+            return frequencyDictionary;
         }
 
-        public string Decode(string codedText)
+        private class Node : IComparable<Node>
         {
-            return Decoder.GetDecodedMessage(codedText);
+            public char Symbol { get; private set; }
+            public int Frequency { get; private set; }
+            public List<Node> Childs { get; private set; }
+
+            public Node(char symbol, int frequency, List<Node> childs)
+            {
+                this.Symbol = symbol;
+                this.Frequency = frequency;
+                this.Childs = childs;
+            }
+
+            public int CompareTo(Node other)
+            {
+                var result = -this.Frequency.CompareTo(other.Frequency);
+                if (result == 0)
+                {
+                    result = this.Symbol.CompareTo(other.Symbol);
+                }
+                return result;
+            }
         }
 
-        private IReadOnlyDictionary<char, string> CreateCodeWords(string message, int numberSystem)
-        {
-            return CreateCodeWords(GetFrequencyDictionary(message), numberSystem);
-        }
-
-        private IReadOnlyDictionary<char, string> CreateCodeWords(IReadOnlyDictionary<char, double>
-            frequencyDictionary, int numberSystem)
+        private Dictionary<char, string> CreateCodeWords(Dictionary<char, int> frequencyDictionary,
+            int numberSystem)
         {
             var tree = new List<Node>(frequencyDictionary.Count);
 
-            foreach (var key in frequencyDictionary.Keys)
+            foreach (var pair in frequencyDictionary)
             {
-                tree.Add(new Node(key, frequencyDictionary[key], null));
+                tree.Add(new Node(pair.Key, pair.Value, null));
             }
 
-            int m = frequencyDictionary.Count;
-            if (m > numberSystem)
             {
-
-                while ((m - numberSystem) % (numberSystem - 1) != 0)
+                int m = frequencyDictionary.Count;
+                if (m > numberSystem)
                 {
-                    m++;
+
+                    while ((m - numberSystem) % (numberSystem - 1) != 0)
+                    {
+                        m++;
+                    }
+
                 }
+                int start = numberSystem - (m - frequencyDictionary.Count); //сколько нужно взять на первом шаге
 
+                // первый шаг           
+                var nodes = new List<Node>(start);
+                var sumNodes = 0;
+                tree.Sort();
+
+                while (tree.Count > 0 && nodes.Count != start)
+                {
+                    int last = tree.Count - 1;
+                    nodes.Add(tree[last]);
+                    sumNodes += tree[last].Frequency;
+                    tree.RemoveAt(last);
+                }
+                //
+                tree.Add(new Node(char.MinValue, sumNodes, nodes));
             }
-            int start = numberSystem - (m - frequencyDictionary.Count); //сколько нужно взять на первом шаге
-
-            // первый шаг
-            tree.Sort();
-            var nodes = new List<Node>(start);
-            var sumNodes = 0.0;
-            while (tree.Count > 0 && nodes.Count != start)
-            {
-                int last = tree.Count - 1;
-                nodes.Add(tree[last]);
-                sumNodes += tree[last].Value;
-                tree.RemoveAt(last);
-            }
-            //
-
-            tree.Add(new Node('0', sumNodes, nodes));
 
             while (tree.Count > 1)
             {
                 tree.Sort();
-                var list = new List<Node>(numberSystem);
-                var sum = 0.0;
+                var childs = new List<Node>(numberSystem);
+                var sumFrequencies = 0;
 
-                while (list.Count < numberSystem)
+                while (childs.Count < numberSystem)
                 {
-                    int last = tree.Count - 1;
-                    list.Add(tree[last]);
-                    sum += tree[last].Value;
-                    tree.RemoveAt(last);
+                    var lastIndex = tree.Count - 1;
+                    childs.Add(tree[lastIndex]);
+                    sumFrequencies += tree[lastIndex].Frequency;
+                    tree.RemoveAt(lastIndex);
                 }
 
-                tree.Add(new Node('0', sum, list));
+                tree.Add(new Node(char.MinValue, sumFrequencies, childs));
             }
 
             return GetCodesWhenTraversing(tree[0]);
         }
 
-        private IReadOnlyDictionary<char, double> GetFrequencyDictionary(string message)
+        private Dictionary<char, string> GetCodesWhenTraversing(Node node)
         {
-            var frequencyDict = new Dictionary<char, double>();
-
-            foreach (char symbol in message)
-            {
-                if (frequencyDict.ContainsKey(symbol))
-                {
-                    frequencyDict[symbol]++;
-                }
-                else
-                {
-                    frequencyDict.Add(symbol, 1);
-                }
-            }
-
-            return frequencyDict;
-        }
-
-        private IReadOnlyDictionary<char, string> GetCodesWhenTraversing(Node node)
-        {
-            Dictionary<char, string> codes = new Dictionary<char, string>(113);
-            StringBuilder path = new StringBuilder(32);
+            var codes = new Dictionary<char, string>(113);
+            var path = new StringBuilder(32);
             DoRecursionTraversal(node, path, codes);
             return codes;
         }
@@ -149,134 +159,69 @@ namespace CodikSite.Algorithms
             }
         }
 
-        private class Node : IComparable<Node>
+        public string Encode(string sourceText, out double compressionRatio)
         {
-            public char Symbol { get; private set; }
-            public double Value { get; private set; }
-            public IReadOnlyList<Node> Childs { get; private set; }
+            var codeWords = CreateCodeWords(GetFrequencyDictionary(sourceText), this._numberSystem);
+            var code = new StringBuilder();
 
-            public Node(char symbol, double value, List<Node> childs)
+            foreach(var symbol in sourceText)
             {
-                this.Symbol = symbol;
-                this.Value = value;
-                this.Childs = childs;
+                code.Append(codeWords[symbol]);
             }
 
-            public int CompareTo(Node other)
+            compressionRatio = ((double)sourceText.Length * BitHacks.GetRealSizeForNumber(char.MaxValue))
+                / ((double)BitHacks.GetRealSizeForNumber((uint)Math.Min(codeWords.Count, _numberSystem) - 1)
+                * code.Length);
+            code.Append(codeWords.ToSrtingExtension());
+            return code.ToString();
+        }
+
+        private Dictionary<string, char> GetCodeWords(string codedText, out int dictionaryIndex)
+        {
+            if (Regex.IsMatch(codedText, @"\A\d+\{(\[(.|\n)\-\d+\])+\}\z"))
             {
-                var result = -this.Value.CompareTo(other.Value);
-                if (result == 0)
+                dictionaryIndex = Regex.Match(codedText, @"\{(\[(.|\n)\-\d+\])+\}\z").Index;
+                var singleCodePattern = @"\[(.|\n)\-\d+\]";
+                var dictionary = new Dictionary<string, char>();
+
+                foreach (Match charCodeWordPairMatch in Regex.Matches(codedText.Substring(dictionaryIndex),
+                    singleCodePattern))
                 {
-                    result = -this.Symbol.CompareTo(other.Symbol);
+                    var codeWord = charCodeWordPairMatch.Value.Substring(3,
+                        charCodeWordPairMatch.Value.Length - 4);
+                    dictionary.Add(codeWord, charCodeWordPairMatch.Value[1]);
                 }
-                return result;
+
+                return dictionary;
+            }
+            else
+            {
+                throw new ArgumentException();
             }
         }
 
-        private static class Coder
+        public string Decode(string codedText)
         {
-            public static string GetCodedMessage(string message, IReadOnlyDictionary<char, string> codes,
-                bool addCodes = false)
-            {
-                return GetCodedMessageBuilder(message, codes, addCodes).ToString();
-            }
+            var codeWords = GetCodeWords(codedText, out int dictionaryIndex);
+            var word = new StringBuilder();
+            var sourceText = new StringBuilder();
 
-            public static StringBuilder AddCodeWords(StringBuilder codedMessageBuilder,
-                IReadOnlyDictionary<char, string> codes)
+            for (int i = 0; i < dictionaryIndex; i++)
             {
-                codedMessageBuilder.Append('{');
-
-                foreach (var pair in codes)
+                word.Append(codedText[i]);
+                if (codeWords.TryGetValue(word.ToString(), out char symbol))
                 {
-                    codedMessageBuilder.Append(string.Format("[{0}-{1}]", pair.Key, pair.Value));
+                    sourceText.Append(symbol);
+                    word.Clear();
                 }
-
-                codedMessageBuilder.Append('}');
-
-                return codedMessageBuilder;
             }
 
-            public static StringBuilder GetCodedMessageBuilder(string message,
-                IReadOnlyDictionary<char, string> codes, bool addCodes = false)
+            if (word.Length != 0)
             {
-                StringBuilder codedMessageBuilder = new StringBuilder(message.Length * 3);
-
-                foreach (var symbol in message)
-                {
-                    codedMessageBuilder.Append(codes[symbol]);
-                }
-
-                if (addCodes) codedMessageBuilder = AddCodeWords(codedMessageBuilder, codes);
-
-                return codedMessageBuilder;
+                throw new ArgumentException();
             }
-
+            return sourceText.ToString();
         }
-
-        private static class Decoder
-        {
-
-            public static string GetDecodedMessage(string codedMessage,
-                IReadOnlyDictionary<char, string> codeWords)
-            {
-                var words = new Dictionary<string, char>(codeWords.Count);
-
-                foreach (var symbol in codeWords.Keys)
-                {
-                    words.Add(codeWords[symbol], symbol);
-                }
-
-                return GetDecodedMessage(codedMessage, words);
-            }
-
-            public static string GetDecodedMessage(string codedMessage,
-                IReadOnlyDictionary<string, char> codeWords = null)
-            {
-                int dictionaryPosition;
-                if (codeWords == null) codeWords = GetCodeWords(codedMessage, out dictionaryPosition);
-                else dictionaryPosition = codedMessage.Length;
-                var word = new StringBuilder(32);
-                var decodedMessage = new StringBuilder();
-
-                for (int i = 0; i < dictionaryPosition; i++)
-                {
-                    word.Append(codedMessage[i]);
-                    if (codeWords.TryGetValue(word.ToString(), out char decoded))
-                    {
-                        decodedMessage.Append(decoded);
-                        word.Clear();
-                    }
-                }
-
-                return decodedMessage.ToString();
-            }
-
-            static IReadOnlyDictionary<string, char> GetCodeWords(string codedMessage,
-                out int dictionaryIndex)
-            {
-                var codedTextPattern = @"\{(\[(.|\n)\-\d+\])+\}\z";
-                var matchAllCodes = Regex.Match(codedMessage, codedTextPattern);
-                if (matchAllCodes.Success)
-                {
-                    dictionaryIndex = matchAllCodes.Index;
-                    var singleCodePattern = @"\[(.|\n)\-\d+\]";
-                    var dictionary = new Dictionary<string, char>();
-
-                    foreach (Match matchCode in Regex.Matches(matchAllCodes.Value, singleCodePattern))
-                    {
-                        var code = matchCode.Value.Substring(3, matchCode.Value.Length - 4);
-                        dictionary.Add(code, matchCode.Value[1]);
-                    }
-
-                    return dictionary;
-                }
-                else
-                {
-                    throw new ArgumentException();
-                }
-            }
-
-        }
-
+        
     }
 }
