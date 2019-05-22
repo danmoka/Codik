@@ -30,8 +30,8 @@
             <div class="form-group">
                 <textarea class="form-control" name="toDecode" value="" wrap="soft" rows="3" placeholder="Ввести код">@ViewData["UploadedText"]</textarea>
                 <small id="help" class="form-text text-muted">
-                    Пожалуйста, введите код в виде: закодированное сообщение{[символ1-частота символа1]...[символN-частота символаN]}.
-                    <br />Например, 2{[a-1][b-1][c-1]}.
+                    Пожалуйста, введите код в виде: закодированное сообщение{[символ1-частота символа1]...[символN-частота символаN]}
+                    <br />Например, 2{[a-1][b-1][c-1]}
                 </small>
             </div>
         </div>
@@ -42,36 +42,44 @@
         </div>
     </div>
 </form>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <p class="lead">Результат</p>
+            <textarea class="form-control" name="result" wrap="soft" rows="6" readonly>@ViewData["Decoded"]</textarea>
+        </div>
+    </div>
+</div>
 @*<div class="form-group">
-    @using (Html.BeginForm("UploadedTextArithmeticDecode", "home", FormMethod.Post, new { enctype = "multipart/form-data" }))
-    {
+        @using (Html.BeginForm("UploadedTextArithmeticDecode", "home", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            <div class="row">
+                <div class=" col-md-4">
+                    <input type="file" name="fileUpload" accept="text/*" /><br />
+                </div>
+                <div class="col-md-2">
+                    <button class="btn pull-right">Загрузить</button>
+                </div>
+            </div>
+        }
+        <small id="help" class="form-text text-muted">
+            Пожалуйста, загружайте файл в кодировке Unicode.
+        </small>
+    </div>*@
+@*<form action="~/Home/GetFile" method="post">
         <div class="row">
-            <div class=" col-md-4">
-                <input type="file" name="fileUpload" accept="text/*" /><br />
+            <div class="col-md-6">
+                <div class="form-group">
+                    <p class="lead">Результат</p>
+                    <textarea class="form-control" name="result" wrap="soft" rows="6" readonly>@ViewData["Decoded"]</textarea>
+                </div>
             </div>
+        </div>
+        <div class="row">
             <div class="col-md-2">
-                <button class="btn pull-right">Загрузить</button>
+                <button class="btn pull-left">Скачать</button>
             </div>
         </div>
-    }
-    <small id="help" class="form-text text-muted">
-        Пожалуйста, загружайте файл в кодировке Unicode.
-    </small>
-</div>*@
-<form action="~/Home/GetFile" method="post">
-    <div class="row">
-        <div class="col-md-6">
-            <div class="form-group">
-                <p class="lead">Результат</p>
-                <textarea class="form-control" name="result" wrap="soft" rows="6" readonly>@ViewData["Decoded"]</textarea>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-md-2">
-            <button class="btn pull-left">Скачать</button>
-        </div>
-    </div>
-</form>
+    </form>*@
 
 

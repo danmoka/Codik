@@ -100,8 +100,9 @@ namespace CodikSite.Controllers
             return View();
         }
 
+        
         [HttpPost]
-        public ActionResult HuffmanEncode(string toEncode, int basis)
+        public ActionResult HuffmanEncode(string toEncode, int? basis)
         {
             if (toEncode.Length == 0)
             {
@@ -109,15 +110,18 @@ namespace CodikSite.Controllers
                 return View();
             }
 
+            if (basis == null || basis < 2)
+                basis = 2;
+
             toEncode = toEncode.Replace("\r\n", "\n");
             try
             {
-                ViewData["Encoded"] = new HuffmanCoding(basis).Encode(toEncode, out double compressionRatio);
+                ViewData["Encoded"] = new HuffmanCoding((int)basis).Encode(toEncode, out double compressionRatio);
                 ViewData["CompressionDegree"] = string.Format("{0:0.##}", compressionRatio);
             }
             catch (Exception e)
             {
-                ViewData["Error"] = e.Message;
+                ViewData["Error"] = "Пожалуйста, проверьте соответствие введенных данных нужному формату.";
             }
 
             ViewData["UploadedText"] = toEncode;
@@ -160,7 +164,7 @@ namespace CodikSite.Controllers
             }
             catch (Exception e)
             {
-                ViewData["Error"] = e.Message;
+                ViewData["Error"] = "Пожалуйста, проверьте соответствие введенных данных нужному формату.";
             }
 
             ViewData["UploadedText"] = toEncode;
@@ -199,7 +203,7 @@ namespace CodikSite.Controllers
             }
             catch (Exception e)
             {
-                ViewData["Error"] = e.Message;
+                ViewData["Error"] = "Пожалуйста, проверьте соответствие введенных данных нужному формату.";
             }
 
             ViewData["UploadedText"] = toEncode;
@@ -238,7 +242,7 @@ namespace CodikSite.Controllers
             }
             catch (Exception e)
             {
-                ViewData["Error"] = e.Message;
+                ViewData["Error"] = "Пожалуйста, проверьте соответствие введенных данных нужному формату.";
             }
 
             ViewData["UploadedText"] = toEncode;
@@ -277,7 +281,7 @@ namespace CodikSite.Controllers
             }
             catch (Exception e)
             {
-                ViewData["Error"] = e.Message;
+                ViewData["Error"] = "Пожалуйста, проверьте соответствие введенных данных нужному формату.";
             }
 
             ViewData["UploadedText"] = toEncode;
@@ -408,6 +412,7 @@ namespace CodikSite.Controllers
             return View();
         }
 
+        [ValidateInput(false)]
         [HttpPost]
         public ActionResult HuffmanDecode(string toDecode)
         {
@@ -474,30 +479,26 @@ namespace CodikSite.Controllers
             {
                 ViewData["Decoded"] = algorithm.Decode(toDecode);
             }
-            catch (ArgumentException e)
-            {
-                ViewData["ArgumentException"] = e.Message;
-            }
             catch (Exception e)
             {
-                ViewData["Error"] = e.Message;
+                ViewData["Error"] = "Пожалуйста, проверьте соответствие введенных данных нужному формату.";
             }
 
             ViewData["UploadedText"] = toDecode;
         }
 
-        [HttpPost]
-        public FileResult GetFile(string result)
-        {
-            using (StreamWriter st = new StreamWriter(Server.MapPath("~/App_Data/" + "file.txt"), false, Encoding.Unicode))
-            {
-                st.Write(result);
-            }
-            string file_path = Server.MapPath("~/App_Data/file.txt");
-            string file_type = "application/txt";
-            string file_name = "file.txt";
-            return File(file_path, file_type, file_name);
-        }
+        //[HttpPost]
+        //public FileResult GetFile(string result)
+        //{
+        //    using (StreamWriter st = new StreamWriter(Server.MapPath("~/App_Data/" + "file.txt"), false, Encoding.Unicode))
+        //    {
+        //        st.Write(result);
+        //    }
+        //    string file_path = Server.MapPath("~/App_Data/file.txt");
+        //    string file_type = "application/txt";
+        //    string file_name = "file.txt";
+        //    return File(file_path, file_type, file_name);
+        //}
 
 
         //private static string GetText(IEnumerable<HttpPostedFileBase> fileUpload, string uploadedText)

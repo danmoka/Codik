@@ -29,8 +29,8 @@
         <div class="col-md-6">
             <div class="form-group">
                 <textarea class="form-control" name="toDecode" value="" wrap="soft" rows="6" placeholder="Ввести код">@ViewData["UploadedText"]</textarea>
-                <small id="help" class="form-text text-muted">Пожалуйста, введите код в виде: (символ1,количество повторов символ1)...(символN,количество повторов символовN).
-                <br />Например, (0,s)(0,w)(0,i)(1,s)(0,_)(0,m)(3,s)(1,$).</small>
+                <small id="help" class="form-text text-muted">Пожалуйста, введите код в виде: (символ1,количество повторов символ1)...(символN,количество повторов символовN)
+                <br />Например, (s,1)(w,1)(i,1)(s,2)(_,1)(m,1)(i,1)(s,2)</small>
             </div>
         </div>
     </div>
@@ -40,6 +40,14 @@
         </div>
     </div>
 </form>
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group">
+            <p class="lead">Результат</p>
+            <textarea class="form-control" name="result" value="" wrap="soft" rows="6" readonly>@ViewData["Decoded"]</textarea>
+        </div>
+    </div>
+</div>
 @*<div class="form-group">
     @using (Html.BeginForm("UploadedTextLRLEDecode", "home", FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
@@ -56,7 +64,7 @@
         Пожалуйста, загружайте файл в кодировке Unicode.
     </small>
 </div>*@
-<form action="~/Home/GetFile" method="post">
+@*<form action="~/Home/GetFile" method="post">
     <div class="row">
         <div class="col-md-6">
             <div class="form-group">
@@ -70,4 +78,4 @@
             <button class="btn pull-left">Скачать</button>
         </div>
     </div>
-</form>
+</form>*@
