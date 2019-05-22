@@ -30,9 +30,9 @@ namespace CodikSite.Algorithms
                 else
                 {
                     answer.Append(string.Format("({0},{1})", dictionary[buffer], symbol));
-                    blockCounter++;
                     dictionary.Add(buffer + symbol, dictionary.Count);
                     buffer = string.Empty;
+                    blockCounter++;
                 }
             }
 
@@ -48,21 +48,17 @@ namespace CodikSite.Algorithms
 
         public string Decode(string codedText)
         {
-            var codedTextPattern = @"\A(\(\d+,(.|\n)\))+\z";
-            if (Regex.Match(codedText, codedTextPattern).Success)
+            if (Regex.IsMatch(codedText, @"\A(\(\d+,(.|\n)\))+\z"))
             {
                 var singleCodePattern = @"\(\d+,(.|\n)\)";
                 var answer = new StringBuilder(codedText.Length);
-                var dictionary = new List<string>
-                {
-                    string.Empty
-                };
+                var dictionary = new List<string> { string.Empty };
 
                 foreach (Match match in Regex.Matches(codedText, singleCodePattern))
                 {
                     var position = int.Parse(match.Value.Substring(1, match.Value.Length - 4));
                     var symbol = match.Value[match.Value.Length - 2];
-                    string word = string.Format("{0}{1}", dictionary[position], symbol);
+                    var word = string.Format("{0}{1}", dictionary[position], symbol);
                     answer.Append(word);
                     dictionary.Add(word);
                 }
@@ -70,8 +66,12 @@ namespace CodikSite.Algorithms
                 answer.Remove(answer.Length - 1, 1);
                 return answer.ToString();
             }
-            else throw new ArgumentException();
+            else
+            {
+                throw new ArgumentException();
+            }
         }
+
     }
 
 }

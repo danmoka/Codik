@@ -30,7 +30,7 @@ namespace CodikSite.Algorithms
                 this._numerator = numerator / gcd;
                 this._denominator = denominator / gcd;
 
-                if (_denominator < 0)
+                if (_denominator < BigInteger.Zero)
                 {
                     _numerator *= -1;
                     _denominator *= -1;
@@ -161,7 +161,7 @@ namespace CodikSite.Algorithms
         private void DeleteSameDigits(ref RationalNumber left, ref RationalNumber right,
             StringBuilder code)
         {
-            int digit = GetFirstDigitAfterDot(left);
+            var digit = GetFirstDigitAfterDot(left);
 
             while (digit == GetFirstDigitAfterDot(right))
             {
@@ -176,10 +176,7 @@ namespace CodikSite.Algorithms
         public string Encode(string sourceText, out double compressionRatio)
         {
             var frequencies = CountEachCharacter(sourceText);
-            var probabilities = new List<RationalNumber>(frequencies.Count + 1)
-            {
-                0
-            };
+            var probabilities = new List<RationalNumber>(frequencies.Count + 1) { 0 };
             var frequenciesCode = frequencies.ToSrtingExtension();
             var characterIndexes = frequencies;
 
@@ -248,5 +245,7 @@ namespace CodikSite.Algorithms
 
             return sourceText.ToString();
         }
+
     }
+
 }
